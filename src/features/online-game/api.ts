@@ -9,14 +9,17 @@ export async function getOnlineGame(gameId: number): Promise<OnlineGame> {
   return unwrap(await api.GET('/api/online-games/{gameId}', { params: { path: { gameId } } }))
 }
 
-export async function markReady(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/** Idempotent; the second Ready before the deadline starts the game. A non-pending game comes back unchanged. */
+export async function markReady(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.POST('/api/online-games/{gameId}/ready', { params: { path: { gameId } } }))
 }
 
-export async function cancelOnlineGame(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/** Pre-start only: a started game answers 409 ONLINE_GAME_ALREADY_STARTED. */
+export async function cancelOnlineGame(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.POST('/api/online-games/{gameId}/cancel', { params: { path: { gameId } } }))
 }
 
-export async function heartbeatOnlineGame(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/** Tells the server the viewer is still here and returns the game, so it doubles as the poll. */
+export async function heartbeatOnlineGame(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.POST('/api/online-games/{gameId}/heartbeat', { params: { path: { gameId } } }))
 }

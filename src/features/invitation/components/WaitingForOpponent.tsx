@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
 import { ApiError } from '../../../api/errors'
-import { formatClock } from '../../../shared/lib/clock'
 import { Button } from '../../../shared/ui/Button'
+import { Countdown } from '../../../shared/ui/Countdown'
 import { GameTerms } from '../../../shared/ui/GameTerms'
 import type { Invitation } from '../api'
 import { useCancelInvitationMutation } from '../hooks/useCancelInvitationMutation'
@@ -22,9 +22,7 @@ type WaitingForOpponentProps = {
 export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProps) {
   const link = `${window.location.origin}/invite/${token}`
   const [copied, setCopied] = useState(false)
-  const now = useNow()
   const cancel = useCancelInvitationMutation(invitation.id ?? 0)
-  const remainingMs = invitation.expiresAt ? Date.parse(invitation.expiresAt) - now : 0
   const cancelFailed = cancel.isError && !(cancel.error instanceof ApiError && LOST_RACE.has(cancel.error.errorCode))
 
   async function handleCopy() {
@@ -60,7 +58,7 @@ export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProp
       </div>
       <GameTerms rated={invitation.rated ?? false} clock={invitation.clock} />
       <p>{messages.waiting}</p>
-      <p className="text-sm text-gray-700">{messages.expiresIn(formatClock(remainingMs))}</p>
+      <Countdown until={invitation.expiresAt} label={messages.expiresIn} />
       {cancelFailed ? (
         <p role="alert" className="text-red-700">
           {errorMessages.generic}
@@ -71,16 +69,4 @@ export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProp
       </Button>
     </div>
   )
-}
-
-/** The current time, refreshed every second for the expiry countdown. */
-function useNow() {
-  const [now, setNow] = useState(Date.now)
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 1_000)
-    return () => clearInterval(timer)
-  }, [])
-
-  return now
 }
