@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(../SWD_BACKEND/**)",
+      "Write(../SWD_BACKEND/**)"
+    ]
+  }
+}
