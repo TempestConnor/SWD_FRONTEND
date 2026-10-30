@@ -1,9 +1,10 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type FormEvent } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
 import { toSide } from '../../../shared/lib/chess'
 import { initialMs, parseClockForm } from '../../../shared/lib/clock'
 import { Button } from '../../../shared/ui/Button'
 import { NumberField } from '../../../shared/ui/NumberField'
+import { Radio, RadioGroup } from '../../../shared/ui/RadioGroup'
 import { useStartCpuGameMutation } from '../hooks/useStartCpuGameMutation'
 import { cpuGameMessages } from '../messages'
 import type { Difficulty, StoredCpuGame } from '../storage'
@@ -121,22 +122,3 @@ export function CpuGameSetup({ notice, onStarted }: CpuGameSetupProps) {
   )
 }
 
-function RadioGroup({ legend, children }: { legend: string; children: ReactNode }) {
-  return (
-    <fieldset className="flex flex-col gap-1">
-      <legend className="text-sm font-medium">{legend}</legend>
-      <div className="flex gap-4">{children}</div>
-    </fieldset>
-  )
-}
-
-type RadioProps = { name: string; label: string; checked: boolean; onChange: () => void }
-
-function Radio({ name, label, checked, onChange }: RadioProps) {
-  return (
-    <label className="flex items-center gap-2">
-      <input type="radio" name={name} checked={checked} onChange={onChange} />
-      {label}
-    </label>
-  )
-}

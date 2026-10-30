@@ -1,7 +1,10 @@
+import { api } from '../../api/client'
+import { unwrap } from '../../api/errors'
 import type { components } from '../../api/schema'
 
 export type OnlineGame = components['schemas']['OnlineGameDTO']
 
-export async function getOnlineGame(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/** Participant-only: anyone else gets 404 ONLINE_GAME_NOT_FOUND. */
+export async function getOnlineGame(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.GET('/api/online-games/{gameId}', { params: { path: { gameId } } }))
 }

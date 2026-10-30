@@ -22,6 +22,11 @@ export function AppLayout() {
             <Link to="/cpu" className="underline">
               {appMessages.header.cpuGame}
             </Link>
+            {session ? (
+              <Link to="/invite" className="underline">
+                {appMessages.header.invite}
+              </Link>
+            ) : null}
           </div>
           {session ? <AccountMenu session={session} /> : <GuestMenu />}
         </nav>
