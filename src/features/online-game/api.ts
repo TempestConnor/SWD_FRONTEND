@@ -41,3 +41,13 @@ export async function makeMove(gameId: number, submission: MoveSubmission): Prom
 export async function getMoves(gameId: number): Promise<GameMove[]> {
   return unwrap(await api.GET('/api/online-games/{gameId}/moves', { params: { path: { gameId } } }))
 }
+
+/** Not implemented yet (F10). */
+export async function resignOnlineGame(_gameId: number): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}
+
+/** Not implemented yet (F10). */
+export async function voteToAbandon(_gameId: number): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}

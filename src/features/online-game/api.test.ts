@@ -7,6 +7,8 @@ import {
   heartbeatOnlineGame,
   makeMove,
   markReady,
+  resignOnlineGame,
+  voteToAbandon,
   type GameMove,
   type OnlineGame,
 } from './api'
@@ -111,5 +113,34 @@ describe('move api', () => {
 
     await expect(getMoves(42)).resolves.toEqual(moves)
     expect(api.GET).toHaveBeenCalledWith('/api/online-games/{gameId}/moves', { params: { path: { gameId: 42 } } })
+  })
+})
+
+describe('resign and abandon api', () => {
+  const ok = (data: unknown) => ({ data, response: new Response(null, { status: 200 }) }) as never
+  const problem = (status: number, errorCode: string) =>
+    ({ error: { status, errorCode }, response: new Response(null, { status }) }) as never
+
+  it('resigns through POST /api/online-games/{gameId}/resign', async () => {
+    const resigned: OnlineGame = { ...game, status: 'COMPLETED', outcome: 'BLACK_WIN', terminationReason: 'RESIGNATION' }
+    vi.mocked(api.POST).mockResolvedValue(ok(resigned))
+
+    await expect(resignOnlineGame(42)).resolves.toEqual(resigned)
+    expect(api.POST).toHaveBeenCalledWith('/api/online-games/{gameId}/resign', { params: { path: { gameId: 42 } } })
+  })
+
+  it('votes to abandon through POST /api/online-games/{gameId}/abandon', async () => {
+    const voted: OnlineGame = { ...game, status: 'ACTIVE', white: { abandonVoted: true } }
+    vi.mocked(api.POST).mockResolvedValue(ok(voted))
+
+    await expect(voteToAbandon(42)).resolves.toEqual(voted)
+    expect(api.POST).toHaveBeenCalledWith('/api/online-games/{gameId}/abandon', { params: { path: { gameId: 42 } } })
+  })
+
+  it('throws ONLINE_GAME_NOT_ACTIVE for a late resignation or vote', async () => {
+    vi.mocked(api.POST).mockResolvedValue(problem(409, 'ONLINE_GAME_NOT_ACTIVE'))
+
+    await expect(resignOnlineGame(42)).rejects.toMatchObject({ name: 'ApiError', errorCode: 'ONLINE_GAME_NOT_ACTIVE' })
+    await expect(voteToAbandon(42)).rejects.toMatchObject({ name: 'ApiError', errorCode: 'ONLINE_GAME_NOT_ACTIVE' })
   })
 })
