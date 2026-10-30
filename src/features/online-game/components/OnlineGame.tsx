@@ -1,17 +1,13 @@
 import { errorMessages } from '../../../api/errorMessages'
 import { ApiError } from '../../../api/errors'
 import { toSide } from '../../../shared/lib/chess'
-import { Board } from '../../../shared/ui/Board'
 import { Button } from '../../../shared/ui/Button'
 import { GameTerms } from '../../../shared/ui/GameTerms'
 import { useOnlineGameHeartbeat } from '../hooks/useOnlineGameHeartbeat'
 import { useOnlineGameQuery } from '../hooks/useOnlineGameQuery'
 import { onlineGameMessages as messages } from '../messages'
+import { OnlinePlay } from './OnlinePlay'
 import { ReadyCheck } from './ReadyCheck'
-
-const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-const noLegalMoves: string[] = []
-const ignore = () => {}
 
 type OnlineGameProps = {
   gameId: number
@@ -19,7 +15,7 @@ type OnlineGameProps = {
 
 /**
  * The board both participants see once an invitation is claimed (BR-INV-008), with the Ready check before
- * the start (F07). Moves are not playable yet: they are F08.
+ * the start (F07) and the moves once it is active (F08).
  */
 export function OnlineGame({ gameId }: OnlineGameProps) {
   const validId = Number.isSafeInteger(gameId) && gameId > 0
@@ -45,15 +41,7 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
           </div>
           <GameTerms rated={game.rated ?? false} clock={game.clock} />
           <ReadyCheck game={game} />
-          <Board
-            fen={game.currentFen ?? START_FEN}
-            movableSide={toSide(game.viewerColor)}
-            orientation={toSide(game.viewerColor)}
-            legalMoves={noLegalMoves}
-            locked
-            onMove={ignore}
-            onIllegalMove={ignore}
-          />
+          <OnlinePlay game={game} />
         </>
       ) : query.isError ? (
         <div className="flex flex-col items-start gap-2">

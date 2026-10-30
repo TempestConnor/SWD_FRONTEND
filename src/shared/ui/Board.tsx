@@ -12,16 +12,18 @@ type BoardProps = {
   movableSide: Side
   /** The side shown at the bottom; White by default. */
   orientation?: Side
-  /** The backend's UCI legal moves; empty once the game is over. */
+  /** The UCI legal moves, from the backend or from chess.js for online games; empty once the game is over. */
   legalMoves: string[]
   /** True while a move is being checked, while the opponent moves, or after the game ended. */
   locked: boolean
+  /** Slides pieces to their new squares; off where positions must show at once, e.g. an optimistic move. */
+  animated?: boolean
   onMove: (uci: string) => void
   onIllegalMove: () => void
 }
 
 /**
- * Click-to-move and drag-to-move board. Legality comes from the backend's legal-move list, not a local engine.
+ * Click-to-move and drag-to-move board. It only offers the moves in legalMoves; the backend still decides.
  * Memoized because a running clock re-renders its parent many times a second.
  */
 export const Board = memo(function Board({
@@ -30,6 +32,7 @@ export const Board = memo(function Board({
   orientation = 'WHITE',
   legalMoves,
   locked,
+  animated = true,
   onMove,
   onIllegalMove,
 }: BoardProps) {
@@ -98,6 +101,7 @@ export const Board = memo(function Board({
           position: fen,
           boardOrientation: orientation === 'WHITE' ? 'white' : 'black',
           squareStyles,
+          showAnimations: animated,
           onSquareClick: handleSquareClick,
           onPieceDrop: handlePieceDrop,
           canDragPiece: ({ piece }) => !locked && !promotion && piece.pieceType.startsWith(color),

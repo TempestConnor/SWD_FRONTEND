@@ -3,10 +3,13 @@ import type { OnlineGame } from '../api'
 import { onlineGameKeys } from '../queryKeys'
 
 /**
- * A Ready or Cancel answers with the game. An in-flight heartbeat is dropped so its older answer cannot
+ * A Ready, Cancel or move answers with the game. An in-flight heartbeat is dropped so its older answer cannot
  * overwrite this one; on failure the game is re-read, e.g. a cancel that lost the race with the start.
  */
-export function useGameActionMutation(gameId: number, action: () => Promise<OnlineGame>) {
+export function useGameActionMutation<TVariables = void>(
+  gameId: number,
+  action: (variables: TVariables) => Promise<OnlineGame>,
+) {
   const queryClient = useQueryClient()
 
   return useMutation({

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { heartbeatOnlineGame } from '../api'
+import { heartbeatOnlineGame, type OnlineGame } from '../api'
 import { onlineGameKeys } from '../queryKeys'
 
 /**
@@ -16,8 +16,10 @@ export function useOnlineGameHeartbeat(gameId: number, enabled: boolean) {
     queryKey: onlineGameKeys.heartbeat(gameId),
     queryFn: async ({ signal }) => {
       const game = await heartbeatOnlineGame(gameId)
-      // A Ready or Cancel cancels this query; its answer is then older than theirs and must not win.
-      if (!signal.aborted) {
+      // A Ready, Cancel or move cancels this query; its answer is then older than theirs and must not win.
+      // A ping sent just before a move was accepted can still answer after it, so fewer plies never win either.
+      const cached = queryClient.getQueryData<OnlineGame>(onlineGameKeys.detail(gameId))
+      if (!signal.aborted && (game.lastPly ?? 0) >= (cached?.lastPly ?? 0)) {
         queryClient.setQueryData(onlineGameKeys.detail(gameId), game)
       }
       return game

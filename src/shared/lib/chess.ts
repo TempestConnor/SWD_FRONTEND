@@ -25,10 +25,18 @@ export function applyUciMove(fen: string, uci: string): string {
   }
 }
 
-export function legalMoves(_fen: string): string[] {
-  throw new Error('not implemented')
+/**
+ * The legal moves in UCI, for instant board feedback where the backend sends no list (online games).
+ * The backend still decides every move. Empty for a finished position or a FEN chess.js cannot read.
+ */
+export function legalMoves(fen: string): string[] {
+  try {
+    return new Chess(fen).moves({ verbose: true }).map((move) => move.lan)
+  } catch {
+    return []
+  }
 }
 
-export function sideToMove(_fen: string): Side {
-  throw new Error('not implemented')
+export function sideToMove(fen: string): Side {
+  return fen.split(' ')[1] === 'b' ? 'BLACK' : 'WHITE'
 }

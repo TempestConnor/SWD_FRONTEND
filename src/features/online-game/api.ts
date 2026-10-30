@@ -27,10 +27,17 @@ export async function heartbeatOnlineGame(gameId: number): Promise<OnlineGame> {
 export type GameMove = components['schemas']['GameMoveDTO']
 export type MoveSubmission = components['schemas']['MakeMoveDTO']
 
-export async function makeMove(_gameId: number, _submission: MoveSubmission): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/**
+ * `ply` must be the game's `lastPly + 1`. Resending the move already accepted at that ply returns the game;
+ * any other rejection (ILLEGAL_MOVE, NOT_YOUR_TURN, MOVE_OUT_OF_SEQUENCE, ...) changes nothing on the server.
+ */
+export async function makeMove(gameId: number, submission: MoveSubmission): Promise<OnlineGame> {
+  return unwrap(
+    await api.POST('/api/online-games/{gameId}/moves', { params: { path: { gameId } }, body: submission }),
+  )
 }
 
-export async function getMoves(_gameId: number): Promise<GameMove[]> {
-  throw new Error('not implemented')
+/** The accepted moves in ply order. */
+export async function getMoves(gameId: number): Promise<GameMove[]> {
+  return unwrap(await api.GET('/api/online-games/{gameId}/moves', { params: { path: { gameId } } }))
 }
