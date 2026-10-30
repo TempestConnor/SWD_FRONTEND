@@ -8,3 +8,15 @@ export type OnlineGame = components['schemas']['OnlineGameDTO']
 export async function getOnlineGame(gameId: number): Promise<OnlineGame> {
   return unwrap(await api.GET('/api/online-games/{gameId}', { params: { path: { gameId } } }))
 }
+
+export async function markReady(_gameId: number): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}
+
+export async function cancelOnlineGame(_gameId: number): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}
+
+export async function heartbeatOnlineGame(_gameId: number): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}
