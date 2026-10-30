@@ -1,8 +1,8 @@
 import { useId } from 'react'
-import { Button } from '../../../shared/ui/Button'
-import { localGameMessages } from '../messages'
+import { Button } from './Button'
+import { sharedUiMessages } from './messages'
 
-const messages = localGameMessages.promotion
+const messages = sharedUiMessages.promotion
 
 export type PromotionPiece = keyof typeof messages.pieces
 

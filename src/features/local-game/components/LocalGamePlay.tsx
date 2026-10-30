@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
+import { opponent, type Side } from '../../../shared/lib/chess'
+import type { RemainingMs } from '../../../shared/lib/clock'
+import { Board } from '../../../shared/ui/Board'
 import { Button } from '../../../shared/ui/Button'
+import { Clock } from '../../../shared/ui/Clock'
 import type { LocalPosition } from '../api'
-import { formatClock, type RemainingMs } from '../clock'
 import { useLocalClock } from '../hooks/useLocalClock'
 import { isRejectedMoveList } from '../hooks/useLocalPositionQuery'
 import { usePlayLocalMoveMutation } from '../hooks/usePlayLocalMoveMutation'
-import { localGameMessages, opponent } from '../messages'
-import type { Side, StoredLocalGame } from '../storage'
-import { LocalBoard } from './LocalBoard'
+import { localGameMessages } from '../messages'
+import type { StoredLocalGame } from '../storage'
 
 const messages = localGameMessages.board
 const noMoves: string[] = []
@@ -65,9 +67,9 @@ export function LocalGamePlay({
   return (
     <div className="flex flex-col gap-3">
       {remaining ? <SideClock side="BLACK" ms={remaining.black} active={running && sideToMove === 'BLACK'} /> : null}
-      <LocalBoard
+      <Board
         fen={position.fen ?? ''}
-        sideToMove={sideToMove}
+        movableSide={sideToMove}
         legalMoves={position.legalMoves ?? noMoves}
         locked={over || playMove.isPending}
         onMove={handleMove}
@@ -92,15 +94,7 @@ export function LocalGamePlay({
 type SideClockProps = { side: Side; ms: number; active: boolean }
 
 function SideClock({ side, ms, active }: SideClockProps) {
-  return (
-    <div
-      role="timer"
-      aria-label={messages.clock(side)}
-      className={`self-end rounded px-3 py-1 font-mono text-xl tabular-nums ${active ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}
-    >
-      {formatClock(ms)}
-    </div>
-  )
+  return <Clock label={messages.clock(side)} ms={ms} active={active} />
 }
 
 function describeState(game: StoredLocalGame, position: LocalPosition, sideToMove: Side): string {

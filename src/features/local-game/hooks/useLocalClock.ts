@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react'
-import { remainingAfterElapsed, sideKey, type RemainingMs } from '../clock'
-import type { Side } from '../storage'
+import type { Side } from '../../../shared/lib/chess'
+import { remainingAfterElapsed, sideKey, type RemainingMs } from '../../../shared/lib/clock'
 
 const TICK_MS = 100
 

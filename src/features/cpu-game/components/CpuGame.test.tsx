@@ -305,8 +305,8 @@ describe('cpu game end', () => {
 
     expect(await screen.findByText('Checkmate. You win.')).toBeInTheDocument()
     expect(storedGame()?.moves).toEqual([...foolsMateSetup, 'd8h4'])
-    await clickMove(user, 'e7e6')
-    expect(pieceOn('e7')).toBe('bP')
+    await clickMove(user, 'd7d6')
+    expect(pieceOn('d7')).toBe('bP')
     expect(storedGame()?.moves).toEqual([...foolsMateSetup, 'd8h4'])
   })
 

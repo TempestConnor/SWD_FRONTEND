@@ -1,8 +1,7 @@
+import type { Side } from '../../shared/lib/chess'
 import type { ClockSettings } from './api'
 
 export const LOCAL_GAME_STORAGE_KEY = 'chess.local-game.v1'
-
-export type Side = 'WHITE' | 'BLACK'
 
 /** The minimum needed to rebuild a local game; the position itself is replayed by the backend. */
 export type StoredLocalGame = {

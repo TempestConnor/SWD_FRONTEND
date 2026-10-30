@@ -1,4 +1,4 @@
-import type { Side } from './storage'
+import { opponent, type Side } from '../../shared/lib/chess'
 
 const sideNames: Record<Side, string> = { WHITE: 'White', BLACK: 'Black' }
 
@@ -32,13 +32,4 @@ export const localGameMessages = {
     FIFTY_MOVE_RULE: 'Draw by the fifty-move rule.',
     timeout: (loser: Side) => `${sideNames[loser]} ran out of time. ${sideNames[opponent(loser)]} wins.`,
   },
-  promotion: {
-    title: 'Choose a promotion piece',
-    cancel: 'Cancel',
-    pieces: { q: 'Queen', r: 'Rook', b: 'Bishop', n: 'Knight' },
-  },
-}
-
-export function opponent(side: Side): Side {
-  return side === 'WHITE' ? 'BLACK' : 'WHITE'
 }

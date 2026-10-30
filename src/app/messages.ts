@@ -3,6 +3,7 @@ export const appMessages = {
   siteName: 'Chess',
   header: {
     localGame: 'Play on this device',
+    cpuGame: 'Play the computer',
     signIn: 'Sign in',
     signUp: 'Sign up',
     signOut: 'Sign out',

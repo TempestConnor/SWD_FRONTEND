@@ -19,6 +19,9 @@ export function AppLayout() {
             <Link to="/local" className="underline">
               {appMessages.header.localGame}
             </Link>
+            <Link to="/cpu" className="underline">
+              {appMessages.header.cpuGame}
+            </Link>
           </div>
           {session ? <AccountMenu session={session} /> : <GuestMenu />}
         </nav>

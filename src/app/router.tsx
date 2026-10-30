@@ -1,5 +1,6 @@
 import { createBrowserRouter, type RouteObject } from 'react-router'
 import { AppLayout } from './AppLayout'
+import { CpuGamePage } from './CpuGamePage'
 import { HomePage } from './HomePage'
 import { LocalGamePage } from './LocalGamePage'
 import { SignInPage } from './SignInPage'
@@ -13,6 +14,7 @@ export const routes: RouteObject[] = [
       { path: '/signin', element: <SignInPage /> },
       { path: '/signup', element: <SignUpPage /> },
       { path: '/local', element: <LocalGamePage /> },
+      { path: '/cpu', element: <CpuGamePage /> },
     ],
   },
 ]

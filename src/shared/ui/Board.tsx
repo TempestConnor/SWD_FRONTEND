@@ -1,17 +1,20 @@
 import { memo, useState, type CSSProperties } from 'react'
 import { Chessboard, type PieceDropHandlerArgs, type SquareHandlerArgs } from 'react-chessboard'
-import type { Side } from '../storage'
+import type { Side } from '../lib/chess'
 import { PromotionDialog, type PromotionPiece } from './PromotionDialog'
 
 const selectedStyle: CSSProperties = { backgroundColor: 'rgba(250, 204, 21, 0.55)' }
 const targetStyle: CSSProperties = { boxShadow: 'inset 0 0 0 4px rgba(22, 163, 74, 0.7)' }
 
-type LocalBoardProps = {
+type BoardProps = {
   fen: string
-  sideToMove: Side
+  /** The side whose pieces can be picked up. */
+  movableSide: Side
+  /** The side shown at the bottom; White by default. */
+  orientation?: Side
   /** The backend's UCI legal moves; empty once the game is over. */
   legalMoves: string[]
-  /** True while a move is being checked or after the game ended. */
+  /** True while a move is being checked, while the opponent moves, or after the game ended. */
   locked: boolean
   onMove: (uci: string) => void
   onIllegalMove: () => void
@@ -19,19 +22,20 @@ type LocalBoardProps = {
 
 /**
  * Click-to-move and drag-to-move board. Legality comes from the backend's legal-move list, not a local engine.
- * Memoized because the clock re-renders its parent many times a second.
+ * Memoized because a running clock re-renders its parent many times a second.
  */
-export const LocalBoard = memo(function LocalBoard({
+export const Board = memo(function Board({
   fen,
-  sideToMove,
+  movableSide,
+  orientation = 'WHITE',
   legalMoves,
   locked,
   onMove,
   onIllegalMove,
-}: LocalBoardProps) {
+}: BoardProps) {
   const [selected, setSelected] = useState<string | null>(null)
   const [promotion, setPromotion] = useState<string | null>(null)
-  const color = sideToMove === 'WHITE' ? 'w' : 'b'
+  const color = movableSide === 'WHITE' ? 'w' : 'b'
 
   function attempt(from: string, to: string) {
     setSelected(null)
@@ -77,7 +81,7 @@ export const LocalBoard = memo(function LocalBoard({
   }
 
   const squareStyles: Record<string, CSSProperties> = {}
-  if (selected !== null) {
+  if (selected !== null && !locked) {
     for (const move of legalMoves) {
       if (move.startsWith(selected)) {
         squareStyles[selected] = selectedStyle
@@ -90,8 +94,9 @@ export const LocalBoard = memo(function LocalBoard({
     <div className="w-full">
       <Chessboard
         options={{
-          id: 'local-game',
+          id: 'board',
           position: fen,
+          boardOrientation: orientation === 'WHITE' ? 'white' : 'black',
           squareStyles,
           onSquareClick: handleSquareClick,
           onPieceDrop: handlePieceDrop,
