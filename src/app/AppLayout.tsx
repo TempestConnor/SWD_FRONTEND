@@ -24,6 +24,9 @@ export function AppLayout() {
             </Link>
             {session ? (
               <>
+                <Link to="/play" className="underline">
+                  {appMessages.header.playOnline}
+                </Link>
                 <Link to="/invite" className="underline">
                   {appMessages.header.invite}
                 </Link>

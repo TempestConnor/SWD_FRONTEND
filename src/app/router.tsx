@@ -8,6 +8,7 @@ import { JoinInvitePage } from './JoinInvitePage'
 import { LocalGamePage } from './LocalGamePage'
 import { MatchHistoryPage } from './MatchHistoryPage'
 import { OnlineGamePage } from './OnlineGamePage'
+import { PlayOnlinePage } from './PlayOnlinePage'
 import { SignInPage } from './SignInPage'
 import { SignUpPage } from './SignUpPage'
 
@@ -20,6 +21,7 @@ export const routes: RouteObject[] = [
       { path: '/signup', element: <SignUpPage /> },
       { path: '/local', element: <LocalGamePage /> },
       { path: '/cpu', element: <CpuGamePage /> },
+      { path: '/play', element: <PlayOnlinePage /> },
       { path: '/invite', element: <InvitePage /> },
       { path: '/invite/:token', element: <JoinInvitePage /> },
       { path: '/games/:gameId', element: <OnlineGamePage /> },

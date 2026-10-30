@@ -4,6 +4,7 @@ export const appMessages = {
   header: {
     localGame: 'Play on this device',
     cpuGame: 'Play the computer',
+    playOnline: 'Play online',
     invite: 'Invite a friend',
     matchHistory: 'Match history',
     signIn: 'Sign in',
