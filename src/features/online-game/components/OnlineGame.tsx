@@ -16,7 +16,8 @@ type OnlineGameProps = {
 
 /**
  * The board both participants see once an invitation is claimed (BR-INV-008), with the Ready check before
- * the start (F07), the moves once it is active (F08) and the player-driven endings (F10).
+ * the start (F07), the moves once it is active (F08), the player-driven endings (F10) and the connection
+ * state of both players (F11).
  */
 export function OnlineGame({ gameId }: OnlineGameProps) {
   const validId = Number.isSafeInteger(gameId) && gameId > 0
@@ -24,7 +25,10 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
   const notFound =
     !validId || (query.error instanceof ApiError && query.error.errorCode === 'ONLINE_GAME_NOT_FOUND')
   const game = query.data
-  useOnlineGameHeartbeat(gameId, validId && (game?.status === 'PENDING' || game?.status === 'ACTIVE'))
+  const heartbeat = useOnlineGameHeartbeat(
+    gameId,
+    validId && (game?.status === 'PENDING' || game?.status === 'ACTIVE'),
+  )
 
   return (
     <section className="flex flex-col gap-4">
@@ -41,6 +45,12 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
             <p className="font-medium">{messages.viewerColor(toSide(game.viewerColor))}</p>
           </div>
           <GameTerms rated={game.rated ?? false} clock={game.clock} />
+          {/* Missing pings for three minutes forfeits a started game (BR-GAME-015/016). */}
+          {heartbeat.failing && game.status === 'ACTIVE' ? (
+            <p role="alert" className="text-red-700">
+              {messages.connectionLost}
+            </p>
+          ) : null}
           <ReadyCheck game={game} />
           <OnlinePlay game={game} />
           <GameEndingControls game={game} />

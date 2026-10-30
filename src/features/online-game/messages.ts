@@ -36,6 +36,10 @@ export const onlineGameMessages = {
     DISCONNECT_FORFEIT_DUE: 'This game has already ended.',
   } as Partial<Record<string, string>>,
   clock: (side: Side) => `${sideNames[side]} clock`,
+  opponentDisconnected: (name: string, remaining: string) =>
+    `${name} has lost connection. If they do not return, they forfeit in ${remaining}.`,
+  connectionLost:
+    'Connection to the server lost. Reconnecting… If you stay away for three minutes, you forfeit the game.',
   resign: 'Resign',
   confirmResign: 'Resign this game? It counts as a loss.',
   proposeAbandon: 'Propose abandoning',
@@ -56,6 +60,10 @@ export const onlineGameMessages = {
       // Running out of time always loses, even against insufficient material (decided 2026-10-15).
       TIMEOUT: { win: 'Your opponent ran out of time. You win.', loss: 'You ran out of time. You lose.' },
       RESIGNATION: { win: 'Your opponent resigned. You win.', loss: 'You resigned. You lose.' },
+      DISCONNECT: {
+        win: 'Your opponent did not reconnect in time. You win.',
+        loss: 'You were disconnected for too long. You lose.',
+      },
     } as Partial<Record<string, { win: string; loss: string }>>,
     /** Draws by termination reason, as the chess library detects them (decided 2026-10-15: no draw claims). */
     draw: {

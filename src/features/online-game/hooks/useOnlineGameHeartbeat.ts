@@ -9,11 +9,14 @@ import { isFinished } from './useOnlineGameQuery'
  */
 const HEARTBEAT_INTERVAL_MS = 5_000
 
-/** Pings while the game is pending or active and writes each answer into the game query. */
+/**
+ * Pings while the game is pending or active and writes each answer into the game query. Pings go on after a
+ * failure, so the viewer reconnects by itself; `failing` is true until one gets through again.
+ */
 export function useOnlineGameHeartbeat(gameId: number, enabled: boolean) {
   const queryClient = useQueryClient()
 
-  useQuery({
+  const { isError } = useQuery({
     queryKey: onlineGameKeys.heartbeat(gameId),
     queryFn: async ({ signal }) => {
       const game = await heartbeatOnlineGame(gameId)
@@ -33,4 +36,5 @@ export function useOnlineGameHeartbeat(gameId: number, enabled: boolean) {
     // A hidden tab must keep pinging, or the server would take it for a closed one.
     refetchIntervalInBackground: true,
   })
+  return { failing: isError }
 }

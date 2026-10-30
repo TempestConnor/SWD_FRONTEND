@@ -10,6 +10,7 @@ import { useRequestGameResult } from '../hooks/useRequestGameResult'
 import { onlineGameMessages as messages } from '../messages'
 import { MoveList } from './MoveList'
 import { OnlineClock } from './OnlineClock'
+import { OpponentConnection } from './OpponentConnection'
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 const noMoves: string[] = []
@@ -75,6 +76,7 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
           {error}
         </p>
       ) : null}
+      <OpponentConnection game={game} onGraceEnd={requestResult} />
       <OnlineClock game={game} side={opponent(viewer)} onFlagFall={requestResult} />
       <Board
         fen={optimistic ? applyUciMove(fen, optimistic) : fen}
@@ -98,7 +100,7 @@ function rejectionMessage(failure: unknown): string {
   return known ?? errorMessages.generic
 }
 
-/** Endings a move, the clock, a resignation or an abandonment can produce; the other termination reasons belong to later features. */
+/** Endings a move, the clock, a resignation, an abandonment or a disconnect can produce. */
 function describeResult(game: OnlineGame, viewer: Side): string | undefined {
   if (game.outcome === 'DRAW') {
     return messages.outcome.draw[game.terminationReason ?? '']
