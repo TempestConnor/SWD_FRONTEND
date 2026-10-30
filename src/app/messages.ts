@@ -10,6 +10,12 @@ export const appMessages = {
     signOut: 'Sign out',
     classicalRating: (rating: number) => `Classical ${rating}`,
   },
+  gameRating: {
+    modes: { CLASSICAL: 'Classical' } as Partial<Record<string, string>>,
+    rated: (mode: string, rating: number) => `Rated game. Your ${mode} rating is now ${rating}.`,
+    draw: (mode: string, rating: number) => `Draws do not change ratings. Your ${mode} rating is ${rating}.`,
+    unrated: 'This game was unrated, so ratings did not change.',
+  },
   signInPage: {
     heading: 'Sign in',
     noAccount: 'New here?',
