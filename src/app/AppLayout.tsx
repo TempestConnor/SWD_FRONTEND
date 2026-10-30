@@ -12,9 +12,14 @@ export function AppLayout() {
     <>
       <header className="border-b border-gray-200">
         <nav className="mx-auto flex max-w-3xl items-center justify-between gap-4 p-4">
-          <Link to="/" className="text-lg font-bold">
-            {appMessages.siteName}
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-lg font-bold">
+              {appMessages.siteName}
+            </Link>
+            <Link to="/local" className="underline">
+              {appMessages.header.localGame}
+            </Link>
+          </div>
           {session ? <AccountMenu session={session} /> : <GuestMenu />}
         </nav>
       </header>

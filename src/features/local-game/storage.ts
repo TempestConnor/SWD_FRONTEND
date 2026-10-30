@@ -17,14 +17,76 @@ export type StoredLocalGame = {
   savedAt: number
 }
 
+const UCI_MOVE = /^[a-h][1-8][a-h][1-8][qrbn]?$/
+
 export function loadLocalGame(): StoredLocalGame | null {
-  throw new Error('not implemented')
+  let raw: string | null
+  try {
+    raw = localStorage.getItem(LOCAL_GAME_STORAGE_KEY)
+  } catch {
+    return null
+  }
+  if (raw === null) {
+    return null
+  }
+
+  try {
+    const value: unknown = JSON.parse(raw)
+    if (isStoredLocalGame(value)) {
+      return value
+    }
+  } catch {
+    // Falls through to discarding the corrupt value.
+  }
+  clearLocalGame()
+  return null
 }
 
-export function saveLocalGame(_game: StoredLocalGame): void {
-  throw new Error('not implemented')
+export function saveLocalGame(game: StoredLocalGame): void {
+  try {
+    localStorage.setItem(LOCAL_GAME_STORAGE_KEY, JSON.stringify(game))
+  } catch {
+    // Storage can be full or blocked; the game keeps running in memory.
+  }
 }
 
 export function clearLocalGame(): void {
-  throw new Error('not implemented')
+  try {
+    localStorage.removeItem(LOCAL_GAME_STORAGE_KEY)
+  } catch {
+    // Nothing to clear when storage is unavailable.
+  }
+}
+
+function isStoredLocalGame(value: unknown): value is StoredLocalGame {
+  return (
+    isRecord(value) &&
+    isClock(value.clock) &&
+    Array.isArray(value.moves) &&
+    value.moves.every((move) => typeof move === 'string' && UCI_MOVE.test(move)) &&
+    (value.remainingMs === null || isRemaining(value.remainingMs)) &&
+    (value.timedOut === null || value.timedOut === 'WHITE' || value.timedOut === 'BLACK') &&
+    typeof value.savedAt === 'number'
+  )
+}
+
+function isClock(value: unknown): value is ClockSettings {
+  return (
+    isRecord(value) &&
+    typeof value.enabled === 'boolean' &&
+    (value.initialMinutes === undefined || typeof value.initialMinutes === 'number') &&
+    (value.incrementSeconds === undefined || typeof value.incrementSeconds === 'number')
+  )
+}
+
+function isRemaining(value: unknown): value is { white: number; black: number } {
+  return isRecord(value) && isTime(value.white) && isTime(value.black)
+}
+
+function isTime(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
 }
