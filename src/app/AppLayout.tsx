@@ -23,9 +23,14 @@ export function AppLayout() {
               {appMessages.header.cpuGame}
             </Link>
             {session ? (
-              <Link to="/invite" className="underline">
-                {appMessages.header.invite}
-              </Link>
+              <>
+                <Link to="/invite" className="underline">
+                  {appMessages.header.invite}
+                </Link>
+                <Link to="/history" className="underline">
+                  {appMessages.header.matchHistory}
+                </Link>
+              </>
             ) : null}
           </div>
           {session ? <AccountMenu session={session} /> : <GuestMenu />}

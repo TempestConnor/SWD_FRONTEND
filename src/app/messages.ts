@@ -5,6 +5,7 @@ export const appMessages = {
     localGame: 'Play on this device',
     cpuGame: 'Play the computer',
     invite: 'Invite a friend',
+    matchHistory: 'Match history',
     signIn: 'Sign in',
     signUp: 'Sign up',
     signOut: 'Sign out',
