@@ -1,3 +1,5 @@
+import { api } from '../../api/client'
+import { unwrap } from '../../api/errors'
 import type { components } from '../../api/schema'
 
 export type Account = components['schemas']['AccountDTO']
@@ -9,14 +11,14 @@ export const authKeys = {
   me: ['auth', 'me'] as const,
 }
 
-export async function signUp(_body: SignUpRequest): Promise<AuthToken> {
-  throw new Error('not implemented')
+export async function signUp(body: SignUpRequest): Promise<AuthToken> {
+  return unwrap(await api.POST('/api/accounts/signup', { body }))
 }
 
-export async function signIn(_body: SignInRequest): Promise<AuthToken> {
-  throw new Error('not implemented')
+export async function signIn(body: SignInRequest): Promise<AuthToken> {
+  return unwrap(await api.POST('/api/accounts/signin', { body }))
 }
 
 export async function getCurrentAccount(): Promise<Account> {
-  throw new Error('not implemented')
+  return unwrap(await api.GET('/api/accounts/me'))
 }

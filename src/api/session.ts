@@ -21,7 +21,24 @@ export function getSession(now: Date = new Date()): Session | null {
   return session
 }
 
-export function saveSession(token: AuthToken): void {
+let snapshotRaw: string | null = null
+let snapshot: Session | null = null
+
+/**
+ * For useSyncExternalStore: the same object until the stored value changes, and no side effects,
+ * so it is safe to call during render. An expired session reads as null; getSession() removes it.
+ */
+export function getSessionSnapshot(now: Date = new Date()): Session | null {
+  const raw = readRaw()
+  if (raw !== snapshotRaw) {
+    snapshotRaw = raw
+    snapshot = parse(raw)
+  }
+
+  return snapshot && Date.parse(snapshot.expiresAt) > now.getTime() ? snapshot : null
+}
+
+export function saveSession(token: AuthToken): Session {
   if (!token.accessToken || !token.expiresAt || !token.account) {
     throw new Error('Sign-in response is missing accessToken, expiresAt, or account')
   }
@@ -33,6 +50,7 @@ export function saveSession(token: AuthToken): void {
     // Storage unavailable (private window, quota); the session lasts only until reload.
   }
   notify()
+  return session
 }
 
 export function clearSession(): void {
@@ -57,12 +75,23 @@ function notify() {
 }
 
 function readStored(): Session | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) {
-      return null
-    }
+  return parse(readRaw())
+}
 
+function readRaw(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function parse(raw: string | null): Session | null {
+  if (!raw) {
+    return null
+  }
+
+  try {
     const parsed: unknown = JSON.parse(raw)
     return isSession(parsed) ? parsed : null
   } catch {

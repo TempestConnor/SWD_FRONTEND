@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext, use } from 'react'
 import type { Session } from '../api/session'
 
 /** Only the signed-in session and signing out; account data lives in the query cache. */
@@ -10,5 +10,9 @@ export type SessionContextValue = {
 export const SessionContext = createContext<SessionContextValue | null>(null)
 
 export function useSession(): SessionContextValue {
-  throw new Error('not implemented')
+  const context = use(SessionContext)
+  if (!context) {
+    throw new Error('useSession must be used inside SessionProvider')
+  }
+  return context
 }
