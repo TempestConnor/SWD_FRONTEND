@@ -12,6 +12,7 @@ Follow [AGENTS.md](../../../AGENTS.md) and the [test-first workflow](../../../do
 ## Before anything
 
 - If no feature ID was given, pick the next one: the first feature in the backlog's Suggested Implementation Order (section E) with no `feat(<ID>)` commit in `git log`. Say which one you picked and why, then continue.
+- Work on a branch named after the feature ID. If it is already checked out, continue. Otherwise, with a clean working tree, create it from the current branch, which holds the previous feature's work: `git switch -c <ID>`. If the tree is dirty or a branch `<ID>` already exists, stop and ask.
 - Confirm `src/api/schema.d.ts` exists. If it is missing, or lacks the endpoints this feature uses, tell the user to start the backend and run `npm run gen:api`, then stop.
 - Never modify `../SWD_BACKEND/`. If the feature needs a backend change, stop and report what is missing.
 
