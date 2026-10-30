@@ -3,8 +3,15 @@ import { Chessboard, type PieceDropHandlerArgs, type SquareHandlerArgs } from 'r
 import type { Side } from '../lib/chess'
 import { PromotionDialog, type PromotionPiece } from './PromotionDialog'
 
-const selectedStyle: CSSProperties = { backgroundColor: 'rgba(250, 204, 21, 0.55)' }
-const targetStyle: CSSProperties = { boxShadow: 'inset 0 0 0 4px rgba(22, 163, 74, 0.7)' }
+const selectedStyle: CSSProperties = { backgroundColor: 'rgba(234, 179, 8, 0.5)' }
+const targetStyle: CSSProperties = {
+  backgroundImage: 'radial-gradient(circle, rgba(31, 38, 34, 0.28) 22%, transparent 24%)',
+}
+// The board's colours come from the theme tokens in index.css.
+const lightSquareStyle: CSSProperties = { backgroundColor: 'var(--color-square-light)' }
+const darkSquareStyle: CSSProperties = { backgroundColor: 'var(--color-square-dark)' }
+const lightNotationStyle: CSSProperties = { color: 'var(--color-square-dark)', fontWeight: 600 }
+const darkNotationStyle: CSSProperties = { color: 'var(--color-square-light)', fontWeight: 600 }
 
 type BoardProps = {
   fen: string
@@ -95,18 +102,24 @@ export const Board = memo(function Board({
 
   return (
     <div className="w-full">
-      <Chessboard
-        options={{
-          id: 'board',
-          position: fen,
-          boardOrientation: orientation === 'WHITE' ? 'white' : 'black',
-          squareStyles,
-          showAnimations: animated,
-          onSquareClick: handleSquareClick,
-          onPieceDrop: handlePieceDrop,
-          canDragPiece: ({ piece }) => !locked && !promotion && piece.pieceType.startsWith(color),
-        }}
-      />
+      <div className="overflow-hidden rounded-xl shadow-lg ring-1 ring-ink/10">
+        <Chessboard
+          options={{
+            id: 'board',
+            position: fen,
+            boardOrientation: orientation === 'WHITE' ? 'white' : 'black',
+            lightSquareStyle,
+            darkSquareStyle,
+            lightSquareNotationStyle: lightNotationStyle,
+            darkSquareNotationStyle: darkNotationStyle,
+            squareStyles,
+            showAnimations: animated,
+            onSquareClick: handleSquareClick,
+            onPieceDrop: handlePieceDrop,
+            canDragPiece: ({ piece }) => !locked && !promotion && piece.pieceType.startsWith(color),
+          }}
+        />
+      </div>
       {promotion ? <PromotionDialog onChoose={handlePromotion} onCancel={() => setPromotion(null)} /> : null}
     </div>
   )

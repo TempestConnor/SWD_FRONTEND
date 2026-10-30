@@ -1,1 +1,24 @@
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+  /* Warm paper page, white cards, ink text, and a green that matches the board's dark squares. */
+  --color-paper: #f5f1e8;
+  --color-surface: #ffffff;
+  --color-line: #e3dccd;
+  --color-ink: #1f2622;
+  --color-muted: #5f6b63;
+  --color-brand: #3d6b4f;
+  --color-brand-strong: #2f5640;
+  --color-brand-soft: #e6efe8;
+  --color-square-light: #ece5d3;
+  --color-square-dark: #789a7a;
+}
+
+@layer base {
+  body {
+    @apply min-h-screen bg-paper font-sans text-ink antialiased;
+  }
+}

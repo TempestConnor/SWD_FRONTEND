@@ -50,7 +50,7 @@ export function SignUpForm({ onSignedUp }: SignUpFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {errors.form ? (
-        <p role="alert" className="rounded bg-red-50 p-3 text-sm text-red-800">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errors.form}
         </p>
       ) : null}
@@ -80,10 +80,13 @@ export function SignUpForm({ onSignedUp }: SignUpFormProps) {
       >
         <legend className="mb-1 text-sm font-medium">{authMessages.fields.signupSkill}</legend>
         {SKILLS.map((skill) => (
-          <label key={skill.value} className="flex items-center gap-2">
-            <input type="radio" name="signupSkill" value={skill.value} required />
+          <label
+            key={skill.value}
+            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 ring-1 ring-line transition-colors hover:bg-paper has-checked:bg-brand-soft has-checked:ring-brand"
+          >
+            <input type="radio" name="signupSkill" value={skill.value} required className="accent-brand" />
             <span>{authMessages.skills[skill.value]}</span>
-            <span className="text-sm text-gray-500">{skill.rating}</span>
+            <span className="ml-auto font-mono text-sm text-muted">{skill.rating}</span>
           </label>
         ))}
         {errors.fields.signupSkill ? (

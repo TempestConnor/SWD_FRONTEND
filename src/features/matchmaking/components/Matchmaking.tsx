@@ -33,13 +33,13 @@ export function Matchmaking({ onMatched }: MatchmakingProps) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">{messages.title}</h1>
-      <p>{messages.intro}</p>
+      <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{messages.title}</h1>
+      <p className="text-muted">{messages.intro}</p>
       <GameTerms rated clock={QUEUE_CLOCK} />
       {request === undefined ? (
         query.isError ? (
           <div className="flex flex-col items-start gap-2">
-            <p role="alert" className="text-red-700">
+            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
               {errorMessages.generic}
             </p>
             <Button onClick={() => void query.refetch()}>{messages.retry}</Button>

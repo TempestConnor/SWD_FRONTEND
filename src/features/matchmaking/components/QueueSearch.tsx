@@ -15,19 +15,22 @@ export function QueueSearch({ request, connectionLost }: QueueSearchProps) {
   const cancel = useCancelQueueMutation()
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <p className="font-medium">{messages.searching}</p>
+    <div className="flex flex-col items-start gap-3 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
+      <p className="flex items-center gap-2 font-semibold">
+        <span aria-hidden="true" className="size-2.5 animate-pulse rounded-full bg-brand" />
+        {messages.searching}
+      </p>
       {request.ratingAtEntry === undefined ? null : (
-        <p className="text-sm text-gray-600">{messages.rating(request.ratingAtEntry)}</p>
+        <p className="text-sm text-muted">{messages.rating(request.ratingAtEntry)}</p>
       )}
-      <p className="text-sm text-gray-600">{messages.keepOpen}</p>
+      <p className="text-sm text-muted">{messages.keepOpen}</p>
       {connectionLost ? (
-        <p role="status" className="text-amber-700">
+        <p role="status" className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900 ring-1 ring-amber-200">
           {messages.connectionLost}
         </p>
       ) : null}
       {cancel.isError ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errorMessages.generic}
         </p>
       ) : null}

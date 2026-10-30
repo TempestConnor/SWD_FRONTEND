@@ -28,7 +28,7 @@ export function NumberField({ label, value, onChange, min, max, error }: NumberF
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className="rounded border border-gray-300 px-3 py-2 aria-invalid:border-red-600"
+        className="rounded-lg border border-line bg-surface px-3 py-2 shadow-xs transition-colors focus:border-brand focus:ring-2 focus:ring-brand/25 focus:outline-none aria-invalid:border-red-600"
       />
       {error ? (
         <p id={errorId} className="text-sm text-red-700">

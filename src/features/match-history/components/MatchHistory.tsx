@@ -22,7 +22,7 @@ export function MatchHistory({ page, onPageChange }: MatchHistoryProps) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">{messages.title}</h1>
+      <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{messages.title}</h1>
       {history ? (
         <>
           {history.content?.length ? (
@@ -38,7 +38,7 @@ export function MatchHistory({ page, onPageChange }: MatchHistoryProps) {
         </>
       ) : query.isError ? (
         <div className="flex flex-col items-start gap-2">
-          <p role="alert" className="text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
             {errorMessages.generic}
           </p>
           <Button onClick={() => void query.refetch()}>{messages.retry}</Button>
@@ -56,11 +56,11 @@ function HistoryEntry({ entry }: HistoryEntryProps) {
   const opponent = entry.opponent?.displayName ?? ''
 
   return (
-    <li className="flex flex-col gap-2 rounded border border-gray-200 p-3">
+    <li className="flex flex-col gap-2 rounded-xl bg-surface p-4 shadow-sm ring-1 ring-line transition-shadow hover:shadow-md">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="font-medium">{messages.opponent(opponent)}</span>
         {entry.endedAt ? (
-          <time dateTime={entry.endedAt} className="text-sm text-gray-600">
+          <time dateTime={entry.endedAt} className="text-sm text-muted">
             {new Date(entry.endedAt).toLocaleString()}
           </time>
         ) : null}
@@ -70,15 +70,15 @@ function HistoryEntry({ entry }: HistoryEntryProps) {
       {entry.ratingChange ? <p className="text-sm">{messages.viewerRating(entry.ratingChange)}</p> : null}
       {/* Plain labels rather than GameTerms, whose own list would nest inside this list item. */}
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="rounded bg-gray-100 px-2 py-1">{entry.rated ? terms.rated : terms.unrated}</span>
-        <span className="rounded bg-gray-100 px-2 py-1">
+        <span className="rounded-full bg-brand-soft px-3 py-1 font-medium text-brand-strong">{entry.rated ? terms.rated : terms.unrated}</span>
+        <span className="rounded-full bg-brand-soft px-3 py-1 font-medium text-brand-strong">
           {entry.clock?.enabled
             ? terms.clock(entry.clock.initialMinutes ?? 0, entry.clock.incrementSeconds ?? 0)
             : terms.noClock}
         </span>
-        {entry.source ? <span className="text-gray-600">{messages.source[entry.source] ?? entry.source}</span> : null}
+        {entry.source ? <span className="text-muted">{messages.source[entry.source] ?? entry.source}</span> : null}
       </div>
-      <Link to={`/history/${entry.gameId}`} className="self-start underline">
+      <Link to={`/history/${entry.gameId}`} className="self-start font-medium text-brand underline-offset-4 hover:underline">
         {messages.viewGame(opponent)}
       </Link>
     </li>

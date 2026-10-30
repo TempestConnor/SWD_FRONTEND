@@ -8,9 +8,9 @@ type MoveListProps = {
 /** The accepted moves in the server's ply order, one entry per ply. */
 export function MoveList({ moves }: MoveListProps) {
   return (
-    <ol aria-label={messages.moves} className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-sm">
+    <ol aria-label={messages.moves} className="flex max-h-48 flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-surface p-3 font-mono text-sm ring-1 ring-line">
       {moves.map((move) => (
-        <li key={move.ply}>{move.san ?? move.move}</li>
+        <li key={move.ply} className="rounded-md bg-paper px-2 py-0.5">{move.san ?? move.move}</li>
       ))}
     </ol>
   )

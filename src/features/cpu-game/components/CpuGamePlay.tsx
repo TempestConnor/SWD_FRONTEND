@@ -125,13 +125,13 @@ export function CpuGamePlay({
       />
       {remainingMs === null ? null : <Clock label={messages.clock} ms={remainingMs} active={running} />}
       {status ? (
-        <p role="status" className="text-lg font-medium">
+        <p role="status" className="rounded-lg bg-surface px-4 py-2.5 text-lg font-semibold shadow-sm ring-1 ring-line">
           {status}
         </p>
       ) : null}
       {error ? (
         <div className="flex flex-col items-start gap-2">
-          <p role="alert" className="text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
             {error}
           </p>
           {error === messages.cpuFailed ? (
@@ -140,7 +140,7 @@ export function CpuGamePlay({
         </div>
       ) : null}
       <div>
-        <Button onClick={handleNewGame}>{messages.newGame}</Button>
+        <Button variant="secondary" onClick={handleNewGame}>{messages.newGame}</Button>
       </div>
     </div>
   )

@@ -31,14 +31,14 @@ export function JoinInvitation({ token, onJoined }: JoinInvitationProps) {
   }
 
   return (
-    <section className="flex flex-col items-start gap-4">
-      <h1 className="text-3xl font-bold">{messages.title}</h1>
+    <section className="flex flex-col items-start gap-4 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
+      <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{messages.title}</h1>
       {refusal ? (
         <>
-          <p role="alert" className="text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
             {refusal}
           </p>
-          <Link to="/" className="underline">
+          <Link to="/" className="font-medium text-brand underline-offset-4 hover:underline">
             {messages.home}
           </Link>
         </>
@@ -46,7 +46,7 @@ export function JoinInvitation({ token, onJoined }: JoinInvitationProps) {
         <>
           <p>{messages.prompt}</p>
           {claim.isError ? (
-            <p role="alert" className="text-red-700">
+            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
               {errorMessages.generic}
             </p>
           ) : null}

@@ -35,7 +35,7 @@ export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProp
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
       <div className="flex flex-col gap-1">
         <label htmlFor="invitation-link" className="text-sm font-medium">
           {messages.link}
@@ -46,7 +46,7 @@ export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProp
             readOnly
             value={link}
             onFocus={(event) => event.target.select()}
-            className="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 font-mono text-sm"
+            className="min-w-0 flex-1 rounded-lg border border-line bg-paper px-3 py-2 font-mono text-sm focus:border-brand focus:ring-2 focus:ring-brand/25 focus:outline-none"
           />
           <Button onClick={() => void handleCopy()}>{messages.copy}</Button>
         </div>
@@ -57,10 +57,13 @@ export function WaitingForOpponent({ invitation, token }: WaitingForOpponentProp
         ) : null}
       </div>
       <GameTerms rated={invitation.rated ?? false} clock={invitation.clock} />
-      <p>{messages.waiting}</p>
+      <p className="flex items-center gap-2 font-medium">
+        <span aria-hidden="true" className="size-2.5 animate-pulse rounded-full bg-brand" />
+        {messages.waiting}
+      </p>
       <Countdown until={invitation.expiresAt} label={messages.expiresIn} />
       {cancelFailed ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errorMessages.generic}
         </p>
       ) : null}

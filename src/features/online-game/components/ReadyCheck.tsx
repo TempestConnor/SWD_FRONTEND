@@ -32,9 +32,9 @@ export function ReadyCheck({ game }: ReadyCheckProps) {
       {lostStartRace ? <p role="status">{messages.alreadyStarted}</p> : null}
       {pending ? (
         <>
-          <ul className="flex flex-col gap-1 text-sm">
+          <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-xl bg-surface text-sm ring-1 ring-line">
             {[game.white, game.black].map((player) => (
-              <li key={player?.accountId}>
+              <li key={player?.accountId} className="px-4 py-2">
                 {player?.ready
                   ? messages.playerReady(player.displayName ?? '')
                   : messages.playerNotReady(player?.displayName ?? '')}
@@ -46,7 +46,7 @@ export function ReadyCheck({ game }: ReadyCheckProps) {
         </>
       ) : null}
       {failed ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errorMessages.generic}
         </p>
       ) : null}
@@ -58,7 +58,7 @@ export function ReadyCheck({ game }: ReadyCheckProps) {
             </Button>
           )}
           <Button
-            className="bg-white text-gray-900 ring-1 ring-gray-300 hover:bg-gray-100"
+            variant="secondary"
             onClick={() => cancel.mutate()}
             disabled={cancel.isPending}
           >

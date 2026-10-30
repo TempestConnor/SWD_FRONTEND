@@ -13,7 +13,7 @@ export function HistoryResult({ result, terminationReason }: HistoryResultProps)
   return (
     <div className="flex flex-wrap items-baseline gap-2">
       {result === undefined ? null : <span className="font-bold">{messages.result[result] ?? result}</span>}
-      {ending === undefined ? null : <span className="text-gray-700">{ending}</span>}
+      {ending === undefined ? null : <span className="text-muted">{ending}</span>}
     </div>
   )
 }

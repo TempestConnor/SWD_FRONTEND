@@ -51,7 +51,7 @@ export function InvitationSetup({ onCreated }: InvitationSetupProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex max-w-sm flex-col gap-4">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line">
       <RadioGroup legend={messages.color}>
         {colors.map((value) => (
           <Radio
@@ -63,8 +63,8 @@ export function InvitationSetup({ onCreated }: InvitationSetupProps) {
           />
         ))}
       </RadioGroup>
-      <label className="flex items-center gap-2">
-        <input type="checkbox" checked={clockEnabled} onChange={(event) => setClockEnabled(event.target.checked)} />
+      <label className="flex cursor-pointer items-center gap-2 font-medium">
+        <input type="checkbox" className="size-4 accent-brand" checked={clockEnabled} onChange={(event) => setClockEnabled(event.target.checked)} />
         {messages.useClock}
       </label>
       {clockEnabled ? (
@@ -87,9 +87,9 @@ export function InvitationSetup({ onCreated }: InvitationSetupProps) {
           />
         </>
       ) : null}
-      <p className="text-sm text-gray-700">{rated ? messages.rated : messages.unrated}</p>
+      <p className="text-sm text-muted">{rated ? messages.rated : messages.unrated}</p>
       {create.isError ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errorMessages.generic}
         </p>
       ) : null}

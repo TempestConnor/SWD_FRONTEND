@@ -7,7 +7,7 @@ export function HistoryGamePage() {
 
   return (
     <RequireSession>
-      <main className="mx-auto max-w-xl p-6">
+      <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6 sm:py-10">
         <HistoryGameDetail gameId={Number(gameId)} />
       </main>
     </RequireSession>

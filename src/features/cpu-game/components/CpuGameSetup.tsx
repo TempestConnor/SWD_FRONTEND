@@ -62,8 +62,8 @@ export function CpuGameSetup({ notice, onStarted }: CpuGameSetupProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex max-w-sm flex-col gap-4">
-      {notice ? <p className="text-amber-800">{notice}</p> : null}
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line">
+      {notice ? <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900 ring-1 ring-amber-200">{notice}</p> : null}
       <RadioGroup legend={messages.difficulty}>
         {difficulties.map((value) => (
           <Radio
@@ -86,8 +86,8 @@ export function CpuGameSetup({ notice, onStarted }: CpuGameSetupProps) {
           />
         ))}
       </RadioGroup>
-      <label className="flex items-center gap-2">
-        <input type="checkbox" checked={clockEnabled} onChange={(event) => setClockEnabled(event.target.checked)} />
+      <label className="flex cursor-pointer items-center gap-2 font-medium">
+        <input type="checkbox" className="size-4 accent-brand" checked={clockEnabled} onChange={(event) => setClockEnabled(event.target.checked)} />
         {messages.useClock}
       </label>
       {clockEnabled ? (
@@ -111,7 +111,7 @@ export function CpuGameSetup({ notice, onStarted }: CpuGameSetupProps) {
         </>
       ) : null}
       {start.isError ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errorMessages.generic}
         </p>
       ) : null}

@@ -32,14 +32,14 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">{messages.title}</h1>
+      <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{messages.title}</h1>
       {notFound ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {messages.notFound}
         </p>
       ) : game ? (
         <>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
             <p>{messages.player('WHITE', game.white?.displayName ?? '')}</p>
             <p>{messages.player('BLACK', game.black?.displayName ?? '')}</p>
             <p className="font-medium">{messages.viewerColor(toSide(game.viewerColor))}</p>
@@ -47,7 +47,7 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
           <GameTerms rated={game.rated ?? false} clock={game.clock} />
           {/* Missing pings for three minutes forfeits a started game (BR-GAME-015/016). */}
           {heartbeat.failing && game.status === 'ACTIVE' ? (
-            <p role="alert" className="text-red-700">
+            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
               {messages.connectionLost}
             </p>
           ) : null}
@@ -57,7 +57,7 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
         </>
       ) : query.isError ? (
         <div className="flex flex-col items-start gap-2">
-          <p role="alert" className="text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
             {errorMessages.generic}
           </p>
           <Button onClick={() => void query.refetch()}>{messages.retry}</Button>

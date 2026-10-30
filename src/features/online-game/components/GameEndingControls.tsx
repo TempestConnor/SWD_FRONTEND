@@ -22,7 +22,7 @@ export function GameEndingControls({ game }: GameEndingControlsProps) {
   const vote = useAbandonVoteMutation(gameId)
   const failure = resign.error ?? vote.error
   const alert = failure ? (
-    <p role="alert" className="text-red-700">
+    <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
       {rejectionMessage(failure)}
     </p>
   ) : null
@@ -59,7 +59,7 @@ export function GameEndingControls({ game }: GameEndingControlsProps) {
         </Button>
         {viewer?.abandonVoted ? null : opponent?.abandonVoted ? (
           <Button
-            className="bg-white text-gray-900 ring-1 ring-gray-300 hover:bg-gray-100"
+            variant="secondary"
             disabled={busy}
             onClick={() => act(messages.confirmAgreeAbandon, () => vote.mutate())}
           >
@@ -67,7 +67,7 @@ export function GameEndingControls({ game }: GameEndingControlsProps) {
           </Button>
         ) : (
           <Button
-            className="bg-white text-gray-900 ring-1 ring-gray-300 hover:bg-gray-100"
+            variant="secondary"
             disabled={busy}
             onClick={() => act(messages.confirmProposeAbandon, () => vote.mutate())}
           >

@@ -27,18 +27,18 @@ export function HistoryGameDetail({ gameId }: HistoryGameDetailProps) {
 
   return (
     <section className="flex flex-col gap-4">
-      <Link to="/history" className="self-start underline">
+      <Link to="/history" className="self-start font-medium text-brand underline-offset-4 hover:underline">
         {messages.back}
       </Link>
       {!validId || errorCode === 'ONLINE_GAME_NOT_FOUND' ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {messages.notFound}
         </p>
       ) : errorCode === 'GAME_NOT_IN_HISTORY' ? (
         // Active games are not in history; they stay reachable through the live game page.
         <div className="flex flex-col items-start gap-2">
           <p>{messages.notInHistory}</p>
-          <Link to={`/games/${gameId}`} className="underline">
+          <Link to={`/games/${gameId}`} className="font-medium text-brand underline-offset-4 hover:underline">
             {messages.toGame}
           </Link>
         </div>
@@ -46,7 +46,7 @@ export function HistoryGameDetail({ gameId }: HistoryGameDetailProps) {
         <GameRecord game={game} />
       ) : query.isError ? (
         <div className="flex flex-col items-start gap-2">
-          <p role="alert" className="text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
             {errorMessages.generic}
           </p>
           <Button onClick={() => void query.refetch()}>{matchHistoryMessages.retry}</Button>
@@ -67,8 +67,8 @@ function GameRecord({ game }: GameRecordProps) {
 
   return (
     <>
-      <h1 className="text-3xl font-bold">{messages.title(white, black)}</h1>
-      <div className="flex flex-col gap-1">
+      <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{messages.title(white, black)}</h1>
+      <div className="flex flex-col gap-1 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
         <p>{messages.player('WHITE', white)}</p>
         <p>{messages.player('BLACK', black)}</p>
         <p className="font-medium">{messages.viewerColor(viewerSide)}</p>
@@ -77,7 +77,7 @@ function GameRecord({ game }: GameRecordProps) {
       <div className="flex flex-wrap items-center gap-2">
         <GameTerms rated={game.rated ?? false} clock={game.clock} />
         {game.source ? (
-          <span className="text-sm text-gray-600">{matchHistoryMessages.source[game.source] ?? game.source}</span>
+          <span className="text-sm text-muted">{matchHistoryMessages.source[game.source] ?? game.source}</span>
         ) : null}
       </div>
       <PlayerRating name={white} change={game.whiteRatingChange} />
@@ -89,9 +89,9 @@ function GameRecord({ game }: GameRecordProps) {
         </figure>
       ) : null}
       <h2 className="text-xl font-bold">{messages.moves}</h2>
-      <ol aria-label={messages.moves} className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-sm">
+      <ol aria-label={messages.moves} className="flex max-h-48 flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-surface p-3 font-mono text-sm ring-1 ring-line">
         {game.moves?.map((move) => (
-          <li key={move.ply}>{move.san ?? move.move}</li>
+          <li key={move.ply} className="rounded-md bg-paper px-2 py-0.5">{move.san ?? move.move}</li>
         ))}
       </ol>
     </>

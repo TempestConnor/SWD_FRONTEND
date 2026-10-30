@@ -12,7 +12,7 @@ export function Countdown({ until, label }: CountdownProps) {
   const now = useNow()
   const remainingMs = until ? Date.parse(until) - now : 0
 
-  return <p className="text-sm text-gray-700">{label(formatClock(remainingMs))}</p>
+  return <p className="text-sm text-muted">{label(formatClock(remainingMs))}</p>
 }
 
 /** The current time, refreshed every second. */

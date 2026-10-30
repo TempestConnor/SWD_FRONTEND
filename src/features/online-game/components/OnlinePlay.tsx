@@ -68,11 +68,11 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
   return (
     <div className="flex flex-col gap-3">
       {game.status === 'ACTIVE' ? (
-        <p className="text-lg font-medium">{canMove ? messages.yourMove : messages.opponentsMove}</p>
+        <p className="rounded-lg bg-surface px-4 py-2.5 text-lg font-semibold shadow-sm ring-1 ring-line">{canMove ? messages.yourMove : messages.opponentsMove}</p>
       ) : null}
-      {result ? <p className="text-lg font-medium">{result}</p> : null}
+      {result ? <p className="rounded-lg bg-surface px-4 py-2.5 text-lg font-semibold shadow-sm ring-1 ring-line">{result}</p> : null}
       {error ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {error}
         </p>
       ) : null}

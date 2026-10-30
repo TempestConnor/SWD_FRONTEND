@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router'
+import type { ReactNode } from 'react'
+import { Link, NavLink, Outlet } from 'react-router'
 import type { Session } from '../api/session'
 import { useCurrentAccountQuery } from '../features/auth/hooks/useCurrentAccountQuery'
 import { Button } from '../shared/ui/Button'
@@ -9,48 +10,66 @@ export function AppLayout() {
   const { session } = useSession().state
 
   return (
-    <>
-      <header className="border-b border-gray-200">
-        <nav className="mx-auto flex max-w-3xl items-center justify-between gap-4 p-4">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-lg font-bold">
-              {appMessages.siteName}
-            </Link>
-            <Link to="/local" className="underline">
-              {appMessages.header.localGame}
-            </Link>
-            <Link to="/cpu" className="underline">
-              {appMessages.header.cpuGame}
-            </Link>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
+        <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
+          <Link to="/" className="flex items-center gap-2 font-display text-xl font-semibold tracking-tight">
+            <span
+              aria-hidden="true"
+              className="grid size-8 place-items-center rounded-lg bg-brand text-lg leading-none text-white"
+            >
+              ♞
+            </span>
+            {appMessages.siteName}
+          </Link>
+          <div className="order-last -mx-1 flex w-full gap-1 overflow-x-auto md:order-none md:w-auto md:flex-1">
+            <NavItem to="/local">{appMessages.header.localGame}</NavItem>
+            <NavItem to="/cpu">{appMessages.header.cpuGame}</NavItem>
             {session ? (
               <>
-                <Link to="/play" className="underline">
-                  {appMessages.header.playOnline}
-                </Link>
-                <Link to="/invite" className="underline">
-                  {appMessages.header.invite}
-                </Link>
-                <Link to="/history" className="underline">
-                  {appMessages.header.matchHistory}
-                </Link>
+                <NavItem to="/play">{appMessages.header.playOnline}</NavItem>
+                <NavItem to="/invite">{appMessages.header.invite}</NavItem>
+                <NavItem to="/history">{appMessages.header.matchHistory}</NavItem>
               </>
             ) : null}
           </div>
-          {session ? <AccountMenu session={session} /> : <GuestMenu />}
+          <div className="ml-auto">{session ? <AccountMenu session={session} /> : <GuestMenu />}</div>
         </nav>
       </header>
-      <Outlet />
-    </>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  )
+}
+
+type NavItemProps = { to: string; children: ReactNode }
+
+function NavItem({ to, children }: NavItemProps) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
+          isActive ? 'bg-brand-soft text-brand-strong' : 'text-muted hover:bg-paper hover:text-ink'
+        }`
+      }
+    >
+      {children}
+    </NavLink>
   )
 }
 
 function GuestMenu() {
   return (
-    <div className="flex items-center gap-4">
-      <Link to="/signin" className="underline">
+    <div className="flex items-center gap-2">
+      <Link to="/signin" className="rounded-lg px-3 py-1.5 text-sm font-medium text-muted hover:text-ink">
         {appMessages.header.signIn}
       </Link>
-      <Link to="/signup" className="underline">
+      <Link
+        to="/signup"
+        className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-brand-strong"
+      >
         {appMessages.header.signUp}
       </Link>
     </div>
@@ -66,12 +85,16 @@ function AccountMenu({ session }: AccountMenuProps) {
   const rating = account.ratings?.find((entry) => entry.mode === 'CLASSICAL')?.rating
 
   return (
-    <div className="flex items-center gap-4">
-      <span className="font-medium">{account.displayName}</span>
-      {rating === undefined ? null : (
-        <span className="text-sm text-gray-600">{appMessages.header.classicalRating(rating)}</span>
-      )}
-      <Button onClick={signOut}>{appMessages.header.signOut}</Button>
+    <div className="flex items-center gap-3">
+      <div className="flex flex-col items-end leading-tight">
+        <span className="text-sm font-semibold">{account.displayName}</span>
+        {rating === undefined ? null : (
+          <span className="text-xs text-muted">{appMessages.header.classicalRating(rating)}</span>
+        )}
+      </div>
+      <Button variant="secondary" size="sm" onClick={signOut}>
+        {appMessages.header.signOut}
+      </Button>
     </div>
   )
 }

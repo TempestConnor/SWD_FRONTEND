@@ -15,10 +15,10 @@ export function JoinQueue({ notice }: JoinQueueProps) {
   const unavailable = join.error instanceof ApiError && join.error.errorCode === 'MATCHMAKING_UNAVAILABLE'
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex flex-col items-start gap-3 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line">
       {notice === null ? null : <p role="status">{notice}</p>}
       {join.isError ? (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {unavailable ? messages.unavailable : errorMessages.generic}
         </p>
       ) : null}

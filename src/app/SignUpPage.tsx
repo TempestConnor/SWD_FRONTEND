@@ -15,12 +15,14 @@ export function SignUpPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-6 p-6">
-      <h1 className="text-2xl font-bold">{appMessages.signUpPage.heading}</h1>
-      <SignUpForm onSignedUp={() => navigate(from, { replace: true })} />
-      <p className="text-sm">
+    <main className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10 sm:py-16">
+      <div className="flex flex-col gap-6 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line sm:p-8">
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{appMessages.signUpPage.heading}</h1>
+        <SignUpForm onSignedUp={() => navigate(from, { replace: true })} />
+      </div>
+      <p className="text-center text-sm text-muted">
         {appMessages.signUpPage.haveAccount}{' '}
-        <Link to="/signin" state={location.state} className="underline">
+        <Link to="/signin" state={location.state} className="font-medium text-brand underline-offset-4 hover:underline">
           {appMessages.signUpPage.toSignIn}
         </Link>
       </p>

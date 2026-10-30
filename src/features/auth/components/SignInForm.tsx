@@ -34,7 +34,7 @@ export function SignInForm({ onSignedIn }: SignInFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {errors.form ? (
-        <p role="alert" className="rounded bg-red-50 p-3 text-sm text-red-800">
+        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200">
           {errors.form}
         </p>
       ) : null}
