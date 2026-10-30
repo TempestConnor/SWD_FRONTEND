@@ -1,7 +1,7 @@
-/// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,5 +15,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    // Playwright runs the end-to-end tests in e2e/ against the real backend (`npm run e2e`).
+    exclude: [...configDefaults.exclude, 'e2e/**'],
   },
 })

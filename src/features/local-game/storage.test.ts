@@ -32,6 +32,17 @@ describe('local game storage', () => {
     expect(loadLocalGame()).toEqual(untimed)
   })
 
+  it('restores a game without a clock whose timings the backend sent as null', () => {
+    const untimed = {
+      ...game,
+      clock: { enabled: false, initialMinutes: null, incrementSeconds: null },
+      remainingMs: null,
+    }
+    localStorage.setItem(LOCAL_GAME_STORAGE_KEY, JSON.stringify(untimed))
+
+    expect(loadLocalGame()).toEqual(untimed)
+  })
+
   it('discards stored data that is not JSON', () => {
     localStorage.setItem(LOCAL_GAME_STORAGE_KEY, '{not json')
 

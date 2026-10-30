@@ -27,3 +27,9 @@ dist-ssr
 .claude/skills/vercel-*
 .claude/skills/vitest
 .claude/settings.local.json
+
+# Playwright end-to-end output
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

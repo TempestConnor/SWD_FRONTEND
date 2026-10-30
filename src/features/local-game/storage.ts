@@ -73,9 +73,14 @@ function isClock(value: unknown): value is ClockSettings {
   return (
     isRecord(value) &&
     typeof value.enabled === 'boolean' &&
-    (value.initialMinutes === undefined || typeof value.initialMinutes === 'number') &&
-    (value.incrementSeconds === undefined || typeof value.incrementSeconds === 'number')
+    isOptionalNumber(value.initialMinutes) &&
+    isOptionalNumber(value.incrementSeconds)
   )
+}
+
+/** The backend sends null rather than omitting the timings of a disabled clock. */
+function isOptionalNumber(value: unknown): boolean {
+  return value === undefined || value === null || typeof value === 'number'
 }
 
 function isRemaining(value: unknown): value is { white: number; black: number } {
