@@ -9,8 +9,13 @@ import { QueueSearch } from './QueueSearch'
 /** The only queue at launch, so its terms are fixed (BR-MOVE-014). */
 const QUEUE_CLOCK = { enabled: true, initialMinutes: 30, incrementSeconds: 10 }
 
+type MatchmakingProps = {
+  /** Called once the queue request is paired into a pending game. */
+  onMatched?: (gameId: number) => void
+}
+
 /** F05: join the rated classical queue, keep the place with heartbeats, and leave it. */
-export function Matchmaking() {
+export function Matchmaking(_props: MatchmakingProps) {
   const query = useQueueRequestQuery()
   const request = query.data
 
