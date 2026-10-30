@@ -24,3 +24,11 @@ export function applyUciMove(fen: string, uci: string): string {
     return fen
   }
 }
+
+export function legalMoves(_fen: string): string[] {
+  throw new Error('not implemented')
+}
+
+export function sideToMove(_fen: string): Side {
+  throw new Error('not implemented')
+}

@@ -23,3 +23,14 @@ export async function cancelOnlineGame(gameId: number): Promise<OnlineGame> {
 export async function heartbeatOnlineGame(gameId: number): Promise<OnlineGame> {
   return unwrap(await api.POST('/api/online-games/{gameId}/heartbeat', { params: { path: { gameId } } }))
 }
+
+export type GameMove = components['schemas']['GameMoveDTO']
+export type MoveSubmission = components['schemas']['MakeMoveDTO']
+
+export async function makeMove(_gameId: number, _submission: MoveSubmission): Promise<OnlineGame> {
+  throw new Error('not implemented')
+}
+
+export async function getMoves(_gameId: number): Promise<GameMove[]> {
+  throw new Error('not implemented')
+}
