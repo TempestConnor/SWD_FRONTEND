@@ -14,7 +14,7 @@ The frontend and backend are developed separately. **Never create, edit, or dele
 
 ## Requirements
 
-Product behavior comes from the backend's [business rules](../SWD_BACKEND/docs/Chess_Website_Business_Rules_Final_RealReal.md) and [implementation backlog](../SWD_BACKEND/docs/Chess_Implementation_Backlog.md); feature IDs (F01–F16) are shared with the backend. Implement only the feature the user asks for. Features are built **test-first** from acceptance criteria, with a user approval checkpoint after the tests are written; follow the [test-first workflow](docs/testing.md#test-first-workflow). Approved tests are frozen during implementation. Check the backlog's open questions before implementing affected behavior; ask rather than invent policy. If business rules, backlog, and the actual backend API disagree, report the conflict to the user.
+Product behavior comes from the backend's [business rules](../SWD_BACKEND/docs/Chess_Website_Business_Rules_Final_RealReal.md) and [implementation backlog](../SWD_BACKEND/docs/Chess_Implementation_Backlog.md); feature IDs (F01–F16) are shared with the backend. Implement only the feature the user asks for. Features are built **test-first** from acceptance criteria, with the written tests approved automatically once they fail for the right reason; follow the [test-first workflow](docs/testing.md#test-first-workflow). Approved tests are frozen during implementation. Check the backlog's open questions before implementing affected behavior; ask rather than invent policy. If business rules, backlog, and the actual backend API disagree, report the conflict to the user.
 
 ## Stack
 

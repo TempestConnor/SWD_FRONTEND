@@ -1,13 +1,13 @@
 ---
 name: implement-feature
-description: Build one backlog feature in the React frontend test-first, with a stop for user approval after the tests are written. Use when the user runs /implement-feature with a feature ID such as F02.
+description: Build one backlog feature in the React frontend test-first; the written tests are approved automatically and then frozen. Use when the user runs /implement-feature with a feature ID such as F02.
 argument-hint: <feature ID, e.g. F02> [notes]
 disable-model-invocation: true
 ---
 
 # Implement feature $ARGUMENTS
 
-Follow [AGENTS.md](../../../AGENTS.md) and the [test-first workflow](../../../docs/testing.md#test-first-workflow). This command adds the session order and the checkpoint; those documents hold the rules.
+Follow [AGENTS.md](../../../AGENTS.md) and the [test-first workflow](../../../docs/testing.md#test-first-workflow). This command adds the session order and the test freeze; those documents hold the rules.
 
 ## Before anything
 
@@ -22,20 +22,19 @@ Follow [AGENTS.md](../../../AGENTS.md) and the [test-first workflow](../../../do
 2. Load the project skills that apply (see [docs/agent-skills.md](../../../docs/agent-skills.md)); always `vitest` for this phase.
 3. Write the tests and the minimal stubs they need to compile, as described in the workflow. No real logic.
 4. Run `npm run test` and check that every new test fails for the right reason.
-5. **Stop and end your turn** with:
+5. Post a summary with:
    - **Criteria → tests:** a table with each acceptance criterion or edge case, the test that covers it, and its current status (failing).
    - **Not covered by frontend tests:** criteria that belong to the backend, with a one-line reason each.
    - **Open questions:** Needs Clarification items and gaps, each with the behavior that depends on it.
    - **Manual checklist:** what will be checked in the browser after implementation.
-   - **Files:** every test file written. These are frozen once approved.
+   - **Files:** every test file written. These are now approved and frozen.
+6. The tests are approved automatically; continue to Phase 2 in the same turn. Exception: if an open question would change what a test asserts, stop and ask instead of guessing.
 
-Do not start Phase 2 in the same turn. Wait for the user to approve or adjust the tests.
+## Phase 2: implementation
 
-## Phase 2: implementation (after approval)
-
-1. Commit the approved tests (and their stubs) before writing any implementation: `git add <files> && git commit -m "test(<ID>): acceptance tests"`. From here on, `git diff HEAD~1 -- '*.test.*'` must stay empty unless the user approved a change.
+1. Commit the approved tests (and their stubs) before writing any implementation: `git add <files> && git commit -m "test(<ID>): acceptance tests"`. From here on, `git diff HEAD~1 -- '*.test.*'` must stay empty unless the user explicitly told you to change a test.
 2. Load `vercel-composition-patterns` and `vercel-react-best-practices`.
-3. Implement until `npm run check` passes. Approved tests stay unchanged; if one seems wrong, stop and explain.
+3. Implement until `npm run check` passes. Approved tests are frozen: never edit, delete, skip, or loosen one, even if it fails and the fix looks obvious. If a test fails and you believe the test is wrong, stop and end your turn with the failing output and your reasoning, then wait for the user's say-so before touching it.
 4. Commit the implementation: `git commit -m "feat(<ID>): <summary>"`.
 5. Report:
    - the `npm run check` result
