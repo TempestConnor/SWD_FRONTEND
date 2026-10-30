@@ -6,6 +6,7 @@ import { GameTerms } from '../../../shared/ui/GameTerms'
 import { useOnlineGameHeartbeat } from '../hooks/useOnlineGameHeartbeat'
 import { useOnlineGameQuery } from '../hooks/useOnlineGameQuery'
 import { onlineGameMessages as messages } from '../messages'
+import { GameEndingControls } from './GameEndingControls'
 import { OnlinePlay } from './OnlinePlay'
 import { ReadyCheck } from './ReadyCheck'
 
@@ -15,7 +16,7 @@ type OnlineGameProps = {
 
 /**
  * The board both participants see once an invitation is claimed (BR-INV-008), with the Ready check before
- * the start (F07) and the moves once it is active (F08).
+ * the start (F07), the moves once it is active (F08) and the player-driven endings (F10).
  */
 export function OnlineGame({ gameId }: OnlineGameProps) {
   const validId = Number.isSafeInteger(gameId) && gameId > 0
@@ -42,6 +43,7 @@ export function OnlineGame({ gameId }: OnlineGameProps) {
           <GameTerms rated={game.rated ?? false} clock={game.clock} />
           <ReadyCheck game={game} />
           <OnlinePlay game={game} />
+          <GameEndingControls game={game} />
         </>
       ) : query.isError ? (
         <div className="flex flex-col items-start gap-2">

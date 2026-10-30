@@ -316,7 +316,12 @@ describe('ending controls as the game state changes', () => {
   })
 
   it('offers resignation and abandonment only once the game has started', async () => {
-    const pendingGame: OnlineGameData = { ...activeGame, status: 'PENDING', startedAt: undefined }
+    const pendingGame: OnlineGameData = {
+      ...activeGame,
+      status: 'PENDING',
+      startedAt: undefined,
+      white: { ...activeGame.white, ready: false },
+    }
     vi.mocked(getOnlineGame).mockResolvedValue(pendingGame)
     vi.mocked(heartbeatOnlineGame).mockResolvedValue(pendingGame)
     renderGame(userEvent.setup({ advanceTimers: vi.advanceTimersByTime }))

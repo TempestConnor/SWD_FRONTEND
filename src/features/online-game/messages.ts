@@ -36,12 +36,26 @@ export const onlineGameMessages = {
     DISCONNECT_FORFEIT_DUE: 'This game has already ended.',
   } as Partial<Record<string, string>>,
   clock: (side: Side) => `${sideNames[side]} clock`,
+  resign: 'Resign',
+  confirmResign: 'Resign this game? It counts as a loss.',
+  proposeAbandon: 'Propose abandoning',
+  confirmProposeAbandon:
+    'Propose abandoning this game? Your proposal cannot be withdrawn. If your opponent agrees, the game ends in a draw.',
+  agreeAbandon: 'Agree to abandon',
+  confirmAgreeAbandon: 'Agree to abandon this game? It ends in a draw.',
+  viewerProposedAbandon: 'You proposed abandoning the game. Waiting for your opponent to agree.',
+  opponentProposedAbandon: (name: string) => `${name} proposes abandoning the game. If you agree, it ends in a draw.`,
+  /** Why the server refused a resignation or vote, by errorCode; anything else gets the generic message. */
+  endingRejected: {
+    ONLINE_GAME_NOT_ACTIVE: 'This game is no longer in progress.',
+  } as Partial<Record<string, string>>,
   outcome: {
     /** Wins and losses by termination reason, from the viewer's side. */
     decisive: {
       CHECKMATE: { win: 'Checkmate. You win.', loss: 'Checkmate. You lose.' },
       // Running out of time always loses, even against insufficient material (decided 2026-10-15).
       TIMEOUT: { win: 'Your opponent ran out of time. You win.', loss: 'You ran out of time. You lose.' },
+      RESIGNATION: { win: 'Your opponent resigned. You win.', loss: 'You resigned. You lose.' },
     } as Partial<Record<string, { win: string; loss: string }>>,
     /** Draws by termination reason, as the chess library detects them (decided 2026-10-15: no draw claims). */
     draw: {
@@ -49,6 +63,7 @@ export const onlineGameMessages = {
       INSUFFICIENT_MATERIAL: 'Draw by insufficient material.',
       REPETITION: 'Draw by threefold repetition.',
       MOVE_COUNT: 'Draw by the fifty-move rule.',
+      MUTUAL_ABANDONMENT: 'The game was abandoned by agreement. It is a draw.',
     } as Partial<Record<string, string>>,
   },
 }

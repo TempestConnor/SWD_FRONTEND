@@ -98,7 +98,7 @@ function rejectionMessage(failure: unknown): string {
   return known ?? errorMessages.generic
 }
 
-/** Endings a move or the clock can produce; the other termination reasons belong to later features. */
+/** Endings a move, the clock, a resignation or an abandonment can produce; the other termination reasons belong to later features. */
 function describeResult(game: OnlineGame, viewer: Side): string | undefined {
   if (game.outcome === 'DRAW') {
     return messages.outcome.draw[game.terminationReason ?? '']

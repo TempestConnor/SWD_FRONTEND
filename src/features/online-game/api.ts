@@ -42,12 +42,15 @@ export async function getMoves(gameId: number): Promise<GameMove[]> {
   return unwrap(await api.GET('/api/online-games/{gameId}/moves', { params: { path: { gameId } } }))
 }
 
-/** Not implemented yet (F10). */
-export async function resignOnlineGame(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/** Ends an active game as the caller's loss, on either turn. A game whose flag already fell comes back as that timeout. */
+export async function resignOnlineGame(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.POST('/api/online-games/{gameId}/resign', { params: { path: { gameId } } }))
 }
 
-/** Not implemented yet (F10). */
-export async function voteToAbandon(_gameId: number): Promise<OnlineGame> {
-  throw new Error('not implemented')
+/**
+ * Proposes abandoning an active game, or agrees to the opponent's proposal, which ends it as a draw. A vote is
+ * permanent; repeating it returns the game.
+ */
+export async function voteToAbandon(gameId: number): Promise<OnlineGame> {
+  return unwrap(await api.POST('/api/online-games/{gameId}/abandon', { params: { path: { gameId } } }))
 }
