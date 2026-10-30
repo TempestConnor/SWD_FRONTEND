@@ -16,6 +16,7 @@ export function useGameActionMutation<TVariables = void>(
     mutationFn: action,
     onMutate: () => queryClient.cancelQueries({ queryKey: onlineGameKeys.heartbeat(gameId) }),
     onSuccess: (game) => queryClient.setQueryData(onlineGameKeys.detail(gameId), game),
-    onError: () => queryClient.invalidateQueries({ queryKey: onlineGameKeys.detail(gameId), exact: true }),
+    // Not awaited: the caller's onError (the message, asking for a due result) must not wait for the re-read.
+    onError: () => void queryClient.invalidateQueries({ queryKey: onlineGameKeys.detail(gameId), exact: true }),
   })
 }

@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { heartbeatOnlineGame, type OnlineGame } from '../api'
 import { onlineGameKeys } from '../queryKeys'
+import { isFinished } from './useOnlineGameQuery'
 
 /**
  * The server cancels a pending game after 30 s without contact (BR-INV-013/015); pinging well inside that
@@ -17,9 +18,11 @@ export function useOnlineGameHeartbeat(gameId: number, enabled: boolean) {
     queryFn: async ({ signal }) => {
       const game = await heartbeatOnlineGame(gameId)
       // A Ready, Cancel or move cancels this query; its answer is then older than theirs and must not win.
-      // A ping sent just before a move was accepted can still answer after it, so fewer plies never win either.
+      // A ping sent just before a move was accepted can still answer after it, so fewer plies never win either,
+      // and nor does a running game over one already seen to end.
       const cached = queryClient.getQueryData<OnlineGame>(onlineGameKeys.detail(gameId))
-      if (!signal.aborted && (game.lastPly ?? 0) >= (cached?.lastPly ?? 0)) {
+      const older = (game.lastPly ?? 0) < (cached?.lastPly ?? 0) || (isFinished(cached) && !isFinished(game))
+      if (!signal.aborted && !older) {
         queryClient.setQueryData(onlineGameKeys.detail(gameId), game)
       }
       return game

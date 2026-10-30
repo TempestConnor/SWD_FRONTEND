@@ -35,9 +35,14 @@ export const onlineGameMessages = {
     TIME_EXPIRED: 'Your clock has run out.',
     DISCONNECT_FORFEIT_DUE: 'This game has already ended.',
   } as Partial<Record<string, string>>,
+  clock: (side: Side) => `${sideNames[side]} clock`,
   outcome: {
-    checkmateWin: 'Checkmate. You win.',
-    checkmateLoss: 'Checkmate. You lose.',
+    /** Wins and losses by termination reason, from the viewer's side. */
+    decisive: {
+      CHECKMATE: { win: 'Checkmate. You win.', loss: 'Checkmate. You lose.' },
+      // Running out of time always loses, even against insufficient material (decided 2026-10-15).
+      TIMEOUT: { win: 'Your opponent ran out of time. You win.', loss: 'You ran out of time. You lose.' },
+    } as Partial<Record<string, { win: string; loss: string }>>,
     /** Draws by termination reason, as the chess library detects them (decided 2026-10-15: no draw claims). */
     draw: {
       STALEMATE: 'Draw by stalemate.',

@@ -1,16 +1,20 @@
 import { useCallback, useMemo, useState } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
 import { ApiError } from '../../../api/errors'
-import { applyUciMove, legalMoves, sideToMove, toSide, type Side } from '../../../shared/lib/chess'
+import { applyUciMove, legalMoves, opponent, sideToMove, toSide, type Side } from '../../../shared/lib/chess'
 import { Board } from '../../../shared/ui/Board'
 import type { OnlineGame } from '../api'
 import { useMakeMoveMutation } from '../hooks/useMakeMoveMutation'
 import { useMovesQuery } from '../hooks/useMovesQuery'
+import { useRequestGameResult } from '../hooks/useRequestGameResult'
 import { onlineGameMessages as messages } from '../messages'
 import { MoveList } from './MoveList'
+import { OnlineClock } from './OnlineClock'
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 const noMoves: string[] = []
+/** Move rejections meaning the game has ended on the server although no request has recorded it yet. */
+const endingDue = new Set(['TIME_EXPIRED', 'DISCONNECT_FORFEIT_DUE'])
 
 type OnlinePlayProps = {
   game: OnlineGame
@@ -37,12 +41,24 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
   const canMove = viewerTurn && !isPending
   const legal = useMemo(() => (viewerTurn ? legalMoves(fen) : noMoves), [viewerTurn, fen])
 
+  const requestResult = useRequestGameResult(gameId)
   const handleMove = useCallback(
     (move: string) => {
       setError(null)
-      mutate({ ply: lastPly + 1, move }, { onError: (failure) => setError(rejectionMessage(failure)) })
+      mutate(
+        { ply: lastPly + 1, move },
+        {
+          onError: (failure) => {
+            setError(rejectionMessage(failure))
+            // The ending is due but only a heartbeat records it.
+            if (failure instanceof ApiError && endingDue.has(failure.errorCode)) {
+              requestResult()
+            }
+          },
+        },
+      )
     },
-    [mutate, lastPly],
+    [mutate, lastPly, requestResult],
   )
   const handleIllegalMove = useCallback(() => setError(messages.moveRejected.ILLEGAL_MOVE ?? null), [])
 
@@ -59,6 +75,7 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
           {error}
         </p>
       ) : null}
+      <OnlineClock game={game} side={opponent(viewer)} onFlagFall={requestResult} />
       <Board
         fen={optimistic ? applyUciMove(fen, optimistic) : fen}
         movableSide={viewer}
@@ -70,6 +87,7 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
         onMove={handleMove}
         onIllegalMove={handleIllegalMove}
       />
+      <OnlineClock game={game} side={viewer} onFlagFall={requestResult} />
       {started && moves.data ? <MoveList moves={moves.data} /> : null}
     </div>
   )
@@ -80,14 +98,15 @@ function rejectionMessage(failure: unknown): string {
   return known ?? errorMessages.generic
 }
 
-/** Endings a move can produce; the other termination reasons belong to later features. */
+/** Endings a move or the clock can produce; the other termination reasons belong to later features. */
 function describeResult(game: OnlineGame, viewer: Side): string | undefined {
   if (game.outcome === 'DRAW') {
     return messages.outcome.draw[game.terminationReason ?? '']
   }
-  if (game.terminationReason === 'CHECKMATE') {
-    const viewerWon = game.outcome === (viewer === 'WHITE' ? 'WHITE_WIN' : 'BLACK_WIN')
-    return viewerWon ? messages.outcome.checkmateWin : messages.outcome.checkmateLoss
+  const decisive = messages.outcome.decisive[game.terminationReason ?? '']
+  if (!decisive) {
+    return undefined
   }
-  return undefined
+  const viewerWon = game.outcome === (viewer === 'WHITE' ? 'WHITE_WIN' : 'BLACK_WIN')
+  return viewerWon ? decisive.win : decisive.loss
 }

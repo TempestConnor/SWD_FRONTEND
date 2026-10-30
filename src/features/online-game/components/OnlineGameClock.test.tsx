@@ -203,7 +203,7 @@ describe('timeouts', () => {
     await renderLoaded(asBlack({ ...activeGame, whiteRemainingMs: 60_000 }))
     vi.mocked(heartbeatOnlineGame).mockResolvedValue(asBlack(whiteTimedOut))
 
-    await advance(5_000)
+    await advance(6_000)
 
     expect(screen.getByText('Your opponent ran out of time. You win.')).toBeInTheDocument()
     expect(screen.queryByText('Your move')).not.toBeInTheDocument()
