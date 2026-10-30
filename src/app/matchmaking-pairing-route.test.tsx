@@ -109,8 +109,8 @@ describe('matchmaking pairing route', () => {
     await user.click(await screen.findByRole('button', { name: 'Leave queue' }))
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/games/42'))
-    expect(getOnlineGame).toHaveBeenCalledWith(42)
     expect(await screen.findByText('White: Alex')).toBeInTheDocument()
+    expect(getOnlineGame).toHaveBeenCalledWith(42)
     expect(screen.getByText('Black: Sam')).toBeInTheDocument()
 
     await router.navigate(-1)

@@ -1,3 +1,4 @@
+import { useEffect, useEffectEvent } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
 import { Button } from '../../../shared/ui/Button'
 import { GameTerms } from '../../../shared/ui/GameTerms'
@@ -14,10 +15,21 @@ type MatchmakingProps = {
   onMatched?: (gameId: number) => void
 }
 
-/** F05: join the rated classical queue, keep the place with heartbeats, and leave it. */
-export function Matchmaking(_props: MatchmakingProps) {
+/**
+ * F05: join the rated classical queue, keep the place with heartbeats, and leave it.
+ * F06: the heartbeat (or a cancel that lost the race) reports the pairing, and the pending game opens.
+ */
+export function Matchmaking({ onMatched }: MatchmakingProps) {
   const query = useQueueRequestQuery()
   const request = query.data
+  const matchedGameId = request?.status === 'MATCHED' ? request.gameId : undefined
+
+  const openGame = useEffectEvent((gameId: number) => onMatched?.(gameId))
+  useEffect(() => {
+    if (matchedGameId !== undefined) {
+      openGame(matchedGameId)
+    }
+  }, [matchedGameId])
 
   return (
     <section className="flex flex-col gap-4">
@@ -35,6 +47,10 @@ export function Matchmaking(_props: MatchmakingProps) {
         ) : (
           <p>{messages.loading}</p>
         )
+      ) : request?.status === 'MATCHED' ? (
+        <p role="status" className="font-medium">
+          {messages.matched}
+        </p>
       ) : request?.status === 'QUEUED' ? (
         <QueueSearch request={request} connectionLost={query.isError} />
       ) : (

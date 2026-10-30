@@ -7,6 +7,7 @@ export const matchmakingMessages = {
   searching: 'Searching for an opponent…',
   rating: (rating: number) => `Your rating: ${rating}`,
   keepOpen: 'Keep this page open while searching.',
+  matched: 'Opponent found. Opening the game…',
   leave: 'Leave queue',
   leaving: 'Leaving…',
   left: 'You left the queue.',
