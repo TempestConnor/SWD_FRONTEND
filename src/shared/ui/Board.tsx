@@ -1,11 +1,18 @@
 import { memo, useState, type CSSProperties } from 'react'
 import { Chessboard, type PieceDropHandlerArgs, type SquareHandlerArgs } from 'react-chessboard'
-import type { Side } from '../lib/chess'
+import { checkedKingSquare, isCapture, type Side } from '../lib/chess'
 import { PromotionDialog, type PromotionPiece } from './PromotionDialog'
 
 const selectedStyle: CSSProperties = { backgroundColor: 'rgba(234, 179, 8, 0.5)' }
 const targetStyle: CSSProperties = {
   backgroundImage: 'radial-gradient(circle, rgba(31, 38, 34, 0.28) 22%, transparent 24%)',
+}
+// A ring around the piece that the move would take.
+const captureStyle: CSSProperties = {
+  backgroundImage: 'radial-gradient(circle, transparent 72%, rgba(31, 38, 34, 0.32) 74%)',
+}
+const checkStyle: CSSProperties = {
+  backgroundImage: 'radial-gradient(circle, rgba(220, 38, 38, 0.9) 0%, rgba(220, 38, 38, 0.5) 45%, transparent 75%)',
 }
 // The board's colours come from the theme tokens in index.css.
 const lightSquareStyle: CSSProperties = { backgroundColor: 'var(--color-square-light)' }
@@ -91,11 +98,15 @@ export const Board = memo(function Board({
   }
 
   const squareStyles: Record<string, CSSProperties> = {}
+  const checkedKing = checkedKingSquare(fen)
+  if (checkedKing !== null) {
+    squareStyles[checkedKing] = checkStyle
+  }
   if (selected !== null && !locked) {
     for (const move of legalMoves) {
       if (move.startsWith(selected)) {
         squareStyles[selected] = selectedStyle
-        squareStyles[move.slice(2, 4)] = targetStyle
+        squareStyles[move.slice(2, 4)] = isCapture(fen, move) ? captureStyle : targetStyle
       }
     }
   }
