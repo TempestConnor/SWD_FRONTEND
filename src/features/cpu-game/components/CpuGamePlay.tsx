@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useEffectEvent, useState } from 'react'
-import { applyUciMove, toSide } from '../../../shared/lib/chess'
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react'
+import { applyUciMove, replayMoves, START_FEN, toSide } from '../../../shared/lib/chess'
 import { Board } from '../../../shared/ui/Board'
 import { Button } from '../../../shared/ui/Button'
 import { Clock } from '../../../shared/ui/Clock'
+import { MovePanel, WithMovePanel } from '../../../shared/ui/MovePanel'
 import type { CpuPosition } from '../api'
 import { useCpuClock } from '../hooks/useCpuClock'
 import { useCpuMoveMutation } from '../hooks/useCpuMoveMutation'
@@ -87,6 +88,8 @@ export function CpuGamePlay({
     [onMoved, requestCpuMove, playedMoves],
   )
   const handleIllegalMove = useCallback(() => setError(messages.illegalMove), [])
+  // The stored moves already include a pending move, matching the board.
+  const record = useMemo(() => replayMoves(START_FEN, playedMoves), [playedMoves])
 
   // A game restored on the CPU's turn was refreshed during its calculation, so ask again (F03 edge).
   const resumeCpu = useEffectEvent(() => {
@@ -113,7 +116,7 @@ export function CpuGamePlay({
   const status = describeState(game, position, playerTurn, thinking)
 
   return (
-    <div className="flex flex-col gap-3">
+    <WithMovePanel panel={<MovePanel moves={record.played.map((move) => move.san)} played={record.played} fen={record.fen} />}>
       <Board
         fen={pending ? applyUciMove(fen, pending.move) : fen}
         movableSide={playerColor}
@@ -142,7 +145,7 @@ export function CpuGamePlay({
       <div>
         <Button variant="secondary" onClick={handleNewGame}>{messages.newGame}</Button>
       </div>
-    </div>
+    </WithMovePanel>
   )
 }
 

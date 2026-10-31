@@ -1,10 +1,11 @@
 import { Link } from 'react-router'
 import { errorMessages } from '../../../api/errorMessages'
 import { ApiError } from '../../../api/errors'
-import { toSide, type Side } from '../../../shared/lib/chess'
+import { replayMoves, START_FEN, toSide, type Side } from '../../../shared/lib/chess'
 import { Board } from '../../../shared/ui/Board'
 import { Button } from '../../../shared/ui/Button'
 import { GameTerms } from '../../../shared/ui/GameTerms'
+import { MovePanel, WithMovePanel } from '../../../shared/ui/MovePanel'
 import type { HistoryGame, RatingChange } from '../api'
 import { useHistoryGameQuery } from '../hooks/useHistoryGameQuery'
 import { matchHistoryMessages } from '../messages'
@@ -64,6 +65,8 @@ function GameRecord({ game }: GameRecordProps) {
   const viewerSide = toSide(game.viewerColor)
   const white = game.white?.displayName ?? ''
   const black = game.black?.displayName ?? ''
+  const moves = game.moves ?? []
+  const record = replayMoves(game.initialFen ?? START_FEN, moves.map((move) => move.move ?? ''))
 
   return (
     <>
@@ -82,18 +85,14 @@ function GameRecord({ game }: GameRecordProps) {
       </div>
       <PlayerRating name={white} change={game.whiteRatingChange} />
       <PlayerRating name={black} change={game.blackRatingChange} />
-      {game.finalFen ? (
-        <figure className="flex flex-col gap-2">
-          <figcaption className="font-medium">{messages.finalPosition}</figcaption>
-          <FinalPosition fen={game.finalFen} orientation={viewerSide} />
-        </figure>
-      ) : null}
-      <h2 className="text-xl font-bold">{messages.moves}</h2>
-      <ol aria-label={messages.moves} className="flex max-h-48 flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-surface p-3 font-mono text-sm ring-1 ring-line">
-        {game.moves?.map((move) => (
-          <li key={move.ply} className="rounded-md bg-paper px-2 py-0.5">{move.san ?? move.move}</li>
-        ))}
-      </ol>
+      <WithMovePanel panel={<MovePanel moves={moves.map((move) => move.san ?? move.move ?? '')} played={record.played} fen={record.fen} />}>
+        {game.finalFen ? (
+          <figure className="flex flex-col gap-2">
+            <figcaption className="font-medium">{messages.finalPosition}</figcaption>
+            <FinalPosition fen={game.finalFen} orientation={viewerSide} />
+          </figure>
+        ) : null}
+      </WithMovePanel>
     </>
   )
 }

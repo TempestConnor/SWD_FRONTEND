@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
-import { opponent, type Side } from '../../../shared/lib/chess'
+import { opponent, replayMoves, START_FEN, type Side } from '../../../shared/lib/chess'
 import type { RemainingMs } from '../../../shared/lib/clock'
 import { Board } from '../../../shared/ui/Board'
 import { Button } from '../../../shared/ui/Button'
 import { Clock } from '../../../shared/ui/Clock'
+import { MovePanel, WithMovePanel } from '../../../shared/ui/MovePanel'
 import type { LocalPosition } from '../api'
 import { useLocalClock } from '../hooks/useLocalClock'
 import { isRejectedMoveList } from '../hooks/useLocalPositionQuery'
@@ -57,6 +58,7 @@ export function LocalGamePlay({
     [mutate, playedMoves, onMoved],
   )
   const handleIllegalMove = useCallback(() => setError(messages.illegalMove), [])
+  const record = useMemo(() => replayMoves(START_FEN, playedMoves), [playedMoves])
 
   function handleNewGame() {
     if (over || window.confirm(messages.confirmNewGame)) {
@@ -65,7 +67,7 @@ export function LocalGamePlay({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <WithMovePanel panel={<MovePanel moves={record.played.map((move) => move.san)} played={record.played} fen={record.fen} />}>
       {remaining ? <SideClock side="BLACK" ms={remaining.black} active={running && sideToMove === 'BLACK'} /> : null}
       <Board
         fen={position.fen ?? ''}
@@ -87,7 +89,7 @@ export function LocalGamePlay({
       <div>
         <Button variant="secondary" onClick={handleNewGame}>{messages.newGame}</Button>
       </div>
-    </div>
+    </WithMovePanel>
   )
 }
 

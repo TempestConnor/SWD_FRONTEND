@@ -62,7 +62,7 @@ export function CpuGameSetup({ notice, onStarted }: CpuGameSetupProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line">
+    <form onSubmit={handleSubmit} noValidate className="flex w-full max-w-xl flex-col gap-5 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line">
       {notice ? <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900 ring-1 ring-amber-200">{notice}</p> : null}
       <RadioGroup legend={messages.difficulty}>
         {difficulties.map((value) => (

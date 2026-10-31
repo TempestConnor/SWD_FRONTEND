@@ -25,7 +25,6 @@ export const onlineGameMessages = {
   alreadyStarted: 'The game had already started, so it was not cancelled.',
   yourMove: 'Your move',
   opponentsMove: 'Waiting for your opponent’s move',
-  moves: 'Moves',
   /** Why the server refused a move, by errorCode; anything else gets the generic message. */
   moveRejected: {
     ILLEGAL_MOVE: 'That move is not legal.',

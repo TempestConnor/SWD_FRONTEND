@@ -2,6 +2,8 @@ import { Chess, type Square } from 'chess.js'
 
 export type Side = 'WHITE' | 'BLACK'
 
+export const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+
 export function opponent(side: Side): Side {
   return side === 'WHITE' ? 'BLACK' : 'WHITE'
 }
@@ -72,10 +74,45 @@ export type PieceKind = 'p' | 'n' | 'b' | 'r' | 'q' | 'k'
 /** One replayed move for the move record: its SAN, who played it, and the piece it took, if any. */
 export type PlayedMove = { san: string; side: Side; captured: PieceKind | null }
 
-export function replayMoves(initialFen: string, _uciMoves: string[]): { played: PlayedMove[]; fen: string } {
-  throw new Error(`not implemented: ${initialFen}`)
+/**
+ * Replays accepted moves to name them and find what each one took, for the move record only.
+ * Stops at the first move chess.js cannot apply; the backend's position stays authoritative (BR-MOVE-001).
+ */
+export function replayMoves(initialFen: string, uciMoves: string[]): { played: PlayedMove[]; fen: string } {
+  let chess: Chess
+  try {
+    chess = new Chess(initialFen)
+  } catch {
+    return { played: [], fen: initialFen }
+  }
+  const played: PlayedMove[] = []
+  for (const uci of uciMoves) {
+    try {
+      const move = chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] })
+      played.push({ san: move.san, side: move.color === 'b' ? 'BLACK' : 'WHITE', captured: move.captured ?? null })
+    } catch {
+      break
+    }
+  }
+  return { played, fen: chess.fen() }
 }
 
-export function materialLead(_fen: string): { side: Side; points: number } | null {
-  throw new Error('not implemented')
+const pieceValues: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9 }
+
+/**
+ * Which side has more material on the board, in the usual 1/3/3/5/9 points. Counted from the position rather than
+ * the captures so promoted pieces weigh what they became. Null when level or for a FEN it cannot read.
+ */
+export function materialLead(fen: string): { side: Side; points: number } | null {
+  try {
+    new Chess(fen)
+  } catch {
+    return null
+  }
+  let balance = 0
+  for (const char of fen.split(' ')[0] ?? '') {
+    const value = pieceValues[char.toLowerCase()] ?? 0
+    balance += char === char.toUpperCase() ? value : -value
+  }
+  return balance === 0 ? null : { side: balance > 0 ? 'WHITE' : 'BLACK', points: Math.abs(balance) }
 }

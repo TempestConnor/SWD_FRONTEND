@@ -46,7 +46,6 @@ export const matchHistoryMessages = {
     player: (side: Side, name: string) => `${sideNames[side]}: ${name}`,
     viewerColor: (side: Side) => `You played ${sideNames[side]}`,
     playerRating: (name: string, change: RatingChange) => `${name}: rating ${ratingMove(change)}`,
-    moves: 'Moves',
     finalPosition: 'Final position',
     back: 'Back to match history',
     notFound: 'This game was not found.',

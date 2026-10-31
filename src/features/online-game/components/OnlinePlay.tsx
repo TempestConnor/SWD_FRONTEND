@@ -1,19 +1,19 @@
 import { useCallback, useMemo, useState } from 'react'
 import { errorMessages } from '../../../api/errorMessages'
 import { ApiError } from '../../../api/errors'
-import { applyUciMove, legalMoves, opponent, sideToMove, toSide, type Side } from '../../../shared/lib/chess'
+import { applyUciMove, legalMoves, opponent, replayMoves, sideToMove, START_FEN, toSide, type Side } from '../../../shared/lib/chess'
 import { Board } from '../../../shared/ui/Board'
-import type { OnlineGame } from '../api'
+import { MovePanel, WithMovePanel } from '../../../shared/ui/MovePanel'
+import type { GameMove, OnlineGame } from '../api'
 import { useMakeMoveMutation } from '../hooks/useMakeMoveMutation'
 import { useMovesQuery } from '../hooks/useMovesQuery'
 import { useRequestGameResult } from '../hooks/useRequestGameResult'
 import { onlineGameMessages as messages } from '../messages'
-import { MoveList } from './MoveList'
 import { OnlineClock } from './OnlineClock'
 import { OpponentConnection } from './OpponentConnection'
 
-const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 const noMoves: string[] = []
+const noGameMoves: GameMove[] = []
 /** Move rejections meaning the game has ended on the server although no request has recorded it yet. */
 const endingDue = new Set(['TIME_EXPIRED', 'DISCONNECT_FORFEIT_DUE'])
 
@@ -66,7 +66,7 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
   const result = game.status === 'COMPLETED' ? describeResult(game, viewer) : undefined
 
   return (
-    <div className="flex flex-col gap-3">
+    <WithMovePanel panel={<MoveRecord initialFen={game.initialFen ?? START_FEN} moves={started ? (moves.data ?? noGameMoves) : noGameMoves} />}>
       {game.status === 'ACTIVE' ? (
         <p className="rounded-lg bg-surface px-4 py-2.5 text-lg font-semibold shadow-sm ring-1 ring-line">{canMove ? messages.yourMove : messages.opponentsMove}</p>
       ) : null}
@@ -90,9 +90,16 @@ export function OnlinePlay({ game }: OnlinePlayProps) {
         onIllegalMove={handleIllegalMove}
       />
       <OnlineClock game={game} side={viewer} onFlagFall={requestResult} />
-      {started && moves.data ? <MoveList moves={moves.data} /> : null}
-    </div>
+    </WithMovePanel>
   )
+}
+
+type MoveRecordProps = { initialFen: string; moves: GameMove[] }
+
+/** The move panel: the accepted moves in the server's ply order, with the pieces each side has taken. */
+function MoveRecord({ initialFen, moves }: MoveRecordProps) {
+  const record = useMemo(() => replayMoves(initialFen, moves.map((move) => move.move ?? '')), [initialFen, moves])
+  return <MovePanel moves={moves.map((move) => move.san ?? move.move ?? '')} played={record.played} fen={record.fen} />
 }
 
 function rejectionMessage(failure: unknown): string {
