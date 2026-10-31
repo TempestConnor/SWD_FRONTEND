@@ -40,3 +40,11 @@ export function legalMoves(fen: string): string[] {
 export function sideToMove(fen: string): Side {
   return fen.split(' ')[1] === 'b' ? 'BLACK' : 'WHITE'
 }
+
+export function checkedKingSquare(_fen: string): string | null {
+  throw new Error('not implemented')
+}
+
+export function isCapture(_fen: string, _uci: string): boolean {
+  throw new Error('not implemented')
+}
