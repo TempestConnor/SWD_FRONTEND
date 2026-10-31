@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError } from '../../../api/errors'
@@ -541,5 +541,21 @@ describe('cpu game clock', () => {
 
     expect(screen.getByText('You ran out of time. The CPU wins.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'New game' })).toBeInTheDocument()
+  })
+})
+
+describe('cpu game record', () => {
+  it('lists the moves of both sides and the pieces each has captured', async () => {
+    storeGame({ moves: ['e2e4', 'd7d5', 'e4d5', 'd8d5'] })
+
+    renderGame()
+
+    expect(await screen.findByText('Your move')).toBeInTheDocument()
+    const list = await screen.findByRole('list', { name: 'Moves' })
+    expect(within(list).getAllByRole('listitem').map((item) => item.textContent)).toEqual(['e4', 'd5', 'exd5', 'Qxd5'])
+    expect(within(screen.getByRole('group', { name: 'Captured by White' })).getByText('Pawn')).toBeInTheDocument()
+    expect(within(screen.getByRole('group', { name: 'Captured by Black' })).getByText('Pawn')).toBeInTheDocument()
+    // Level material: neither side shows a lead.
+    expect(screen.queryByText(/^\+\d/)).not.toBeInTheDocument()
   })
 })

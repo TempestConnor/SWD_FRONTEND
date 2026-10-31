@@ -66,3 +66,16 @@ export function isCapture(fen: string, uci: string): boolean {
     return false
   }
 }
+
+export type PieceKind = 'p' | 'n' | 'b' | 'r' | 'q' | 'k'
+
+/** One replayed move for the move record: its SAN, who played it, and the piece it took, if any. */
+export type PlayedMove = { san: string; side: Side; captured: PieceKind | null }
+
+export function replayMoves(initialFen: string, _uciMoves: string[]): { played: PlayedMove[]; fen: string } {
+  throw new Error(`not implemented: ${initialFen}`)
+}
+
+export function materialLead(_fen: string): { side: Side; points: number } | null {
+  throw new Error('not implemented')
+}

@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError } from '../../../api/errors'
@@ -373,5 +373,31 @@ describe('local game clock', () => {
 
     expect(screen.getByText('Black ran out of time. White wins.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'New game' })).toBeInTheDocument()
+  })
+})
+
+describe('local game record', () => {
+  it('lists every move in SAN as it is played', async () => {
+    const { user } = await startDefaultGame()
+    await clickMove(user, 'e2e4')
+    await screen.findByText('Black to move')
+    await clickMove(user, 'd7d5')
+    await screen.findByText('White to move')
+
+    const list = screen.getByRole('list', { name: 'Moves' })
+    expect(within(list).getAllByRole('listitem').map((item) => item.textContent)).toEqual(['e4', 'd5'])
+  })
+
+  it('shows the pieces each side has captured and the material lead', async () => {
+    storeGame({ moves: ['e2e4', 'd7d5', 'e4d5'] })
+
+    renderGame()
+
+    const white = await screen.findByRole('group', { name: 'Captured by White' })
+    expect(within(white).getByText('Pawn')).toBeInTheDocument()
+    expect(within(white).getByText('+1')).toBeInTheDocument()
+    const black = screen.getByRole('group', { name: 'Captured by Black' })
+    expect(within(black).queryByRole('listitem')).not.toBeInTheDocument()
+    expect(within(black).queryByText(/^\+/)).not.toBeInTheDocument()
   })
 })

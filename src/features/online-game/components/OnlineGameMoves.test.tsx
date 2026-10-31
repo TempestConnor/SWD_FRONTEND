@@ -346,3 +346,21 @@ describe('the opponent’s moves', () => {
     expect(within(screen.getByRole('list', { name: 'Moves' })).getByText('e4')).toBeInTheDocument()
   })
 })
+
+describe('captured pieces', () => {
+  it('shows the pieces each side has captured and the material lead', async () => {
+    const afterExd5 = 'rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2'
+    vi.mocked(getMoves).mockResolvedValue([
+      e4,
+      { ply: 2, move: 'd7d5', san: 'd5' },
+      { ply: 3, move: 'e4d5', san: 'exd5', fen: afterExd5 },
+    ])
+
+    await renderLoaded(asBlack({ ...activeGame, currentFen: afterExd5, lastPly: 3 }))
+
+    const white = await screen.findByRole('group', { name: 'Captured by White' })
+    expect(await within(white).findByText('Pawn')).toBeInTheDocument()
+    expect(within(white).getByText('+1')).toBeInTheDocument()
+    expect(within(screen.getByRole('group', { name: 'Captured by Black' })).queryByRole('listitem')).not.toBeInTheDocument()
+  })
+})

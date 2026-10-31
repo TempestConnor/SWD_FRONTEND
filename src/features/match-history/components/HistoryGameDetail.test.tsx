@@ -165,3 +165,28 @@ describe('history game detail', () => {
     expect(await screen.findByText('White: Alex')).toBeInTheDocument()
   })
 })
+
+describe('captured pieces', () => {
+  it('shows the pieces each side captured and the final material lead', async () => {
+    const afterQxa2 = 'rnb1kbnr/ppp1pppp/8/8/8/2N5/qPPP1PPP/R1BQKBNR w KQkq - 0 4'
+    vi.mocked(getHistoryGame).mockResolvedValue({
+      ...ratedResignation,
+      finalFen: afterQxa2,
+      plyCount: 6,
+      moves: [
+        { ply: 1, move: 'e2e4', san: 'e4' },
+        { ply: 2, move: 'd7d5', san: 'd5' },
+        { ply: 3, move: 'e4d5', san: 'exd5' },
+        { ply: 4, move: 'd8d5', san: 'Qxd5' },
+        { ply: 5, move: 'b1c3', san: 'Nc3' },
+        { ply: 6, move: 'd5a2', san: 'Qxa2', fen: afterQxa2 },
+      ],
+    })
+    renderDetail()
+
+    const black = await screen.findByRole('group', { name: 'Captured by Black' })
+    expect(within(black).getAllByText('Pawn')).toHaveLength(2)
+    expect(within(black).getByText('+1')).toBeInTheDocument()
+    expect(within(screen.getByRole('group', { name: 'Captured by White' })).getAllByText('Pawn')).toHaveLength(1)
+  })
+})
